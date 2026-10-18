@@ -1,5 +1,5 @@
 ---
-kind: package-reference
+kind: package-bundle
 description: "Optional AW/STUDIO branding and Aurora glass-and-ink appearance for the customized RC2 Host."
 ---
 # dsh-skin
@@ -12,7 +12,7 @@ A reversible browser plugin for AW/STUDIO branding, Aurora colors, glass surface
 
 ## Installation
 
-Build with `pnpm install --frozen-lockfile --ignore-scripts` and `pnpm run build`. Install as a profile bundle, not by editing an upstream bundle. The first Host migration requires the stopped-service procedure in [DEPLOY.md](DEPLOY.md); adding this plugin to the old customized Host duplicates some styles and uses a different brand scale.
+Build with `pnpm install --frozen-lockfile --ignore-scripts` and `pnpm run build`. Install as a profile bundle, not by editing an upstream bundle. The first Host migration requires the stopped-service procedure in [DEPLOY.md](DEPLOY.md); adding this plugin to the old customized Host duplicates some styles and uses a different brand scale. An already migrated Host with this bundle installed uses that document’s regular-update guidance; do not repeat the first-migration installer or reinstall unrelated plugins.
 
 The package targets DSH `0.2.1-rc.2` with its companion Host migration. Unmodified upstream RC2 supplies the brand slots and theme tokens but lacks several component selectors, so identical appearance there is not promised. The selector expectations are covered by [style-contract.spec.ts](tests/style-contract.spec.ts).
 

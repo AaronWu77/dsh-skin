@@ -1,5 +1,5 @@
 ---
-kind: package-reference
+kind: package-bundle
 description: "为定制 RC2 Host 提供可选的 AW/STUDIO 品牌及极光玻璃与墨色外观。"
 ---
 # dsh-skin
@@ -12,7 +12,7 @@ description: "为定制 RC2 Host 提供可选的 AW/STUDIO 品牌及极光玻璃
 
 ## 安装
 
-运行 `pnpm install --frozen-lockfile --ignore-scripts` 和 `pnpm run build` 构建。作为 profile bundle 安装，不修改上游 bundle。首次迁移 Host 请遵循 [DEPLOY.md](DEPLOY.md) 中的停服步骤；直接加载到旧定制 Host 会产生重复样式及不同的品牌尺寸。
+运行 `pnpm install --frozen-lockfile --ignore-scripts` 和 `pnpm run build` 构建。作为 profile bundle 安装，不修改上游 bundle。首次迁移 Host 请遵循 [DEPLOY.md](DEPLOY.md) 中的停服步骤；直接加载到旧定制 Host 会产生重复样式及不同的品牌尺寸。Host 已迁移且已安装本 bundle 时，使用该文档的日常更新说明；不要重复运行首次迁移安装器或重装其他插件。
 
 本包面向带配套 Host 迁移的 DSH `0.2.1-rc.2`。原版 RC2 有品牌插槽和主题 token，但缺少部分组件选择器，因此不承诺在原版上完全还原。选择器要求由 [style-contract.spec.ts](tests/style-contract.spec.ts) 覆盖。
 
