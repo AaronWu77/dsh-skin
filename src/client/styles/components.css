@@ -1,0 +1,166 @@
+/* Component appearance overrides; layout and interaction remain host-owned. */
+html[data-dsh-skin="aaron"] :is(
+  [data-read], [data-diff], [data-search], [data-terminal], [data-web],
+  .md-code-block, [data-dsh-surface="json"], [data-dsh-surface="tool-io"]
+) {
+  --dsw-alias-label-primary: var(--dsw-code-ink);
+  --dsw-alias-label-secondary: var(--dsw-code-ink-secondary);
+  --dsw-alias-label-tertiary: var(--dsw-code-ink-tertiary);
+}
+
+html[data-dsh-skin="aaron"] :is([data-read], [data-diff], [data-dsh-surface="tool-io"]) {
+  border-radius: var(--dsw-radius-md);
+}
+
+html[data-dsh-skin="aaron"] [data-web] {
+  --dsw-alias-link: var(--dsw-code-link);
+}
+
+html[data-dsh-skin="aaron"] .md-code-block > [data-dsh-part="code-banner-wrap"] {
+  background-color: var(--dsw-alias-markdown-code-block-banner);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-thin);
+  backdrop-filter: var(--dsw-glass-blur-thin);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="modal"] {
+  border-radius: 24px;
+  background: var(--dsw-glass-fill-raised);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
+  backdrop-filter: var(--dsw-glass-blur-strong);
+  --dsw-elevation-stroke-color: var(--dsw-glass-stroke);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="conversation"] {
+  background: var(--dsw-glass-scrim);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="conversation"][data-phase="active"] [data-composer-seat],
+html[data-dsh-skin="aaron"] [data-conversation-content][data-content-phase="active"] [data-composer-seat] {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--dsw-glass-scrim) 0%, transparent) 0px,
+    var(--dsw-glass-scrim) 36px
+  );
+}
+
+html[data-dsh-skin="aaron"] [data-composer-card] {
+  border-radius: 22px;
+  background: var(--dsw-glass-fill-raised);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
+  backdrop-filter: var(--dsw-glass-blur-strong);
+}
+
+/* The workspace-picker state retains the host's transparent elevation stroke. */
+html[data-dsh-skin="aaron"] [data-composer-card]:not([data-dsh-part="composer-workspace-trigger"]) {
+  --dsw-elevation-stroke-color: var(--dsw-glass-stroke);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-part="composer-command"] {
+  border: 0.5px solid var(--dsw-glass-stroke);
+  border-radius: 9px;
+  corner-shape: var(--dsw-corner-shape, round);
+  background: var(--dsw-glass-fill-sunken);
+  color: var(--dsw-alias-label-secondary);
+  transition: background 140ms var(--dsw-motion-spring), color 140ms var(--dsw-motion-spring);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-part="composer-command"]:hover:not(:disabled) {
+  background: var(--dsw-glass-fill-raised);
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-part="composer-primary"] {
+  background: var(--dsw-brand-gradient);
+  box-shadow: 0 4px 14px -4px color-mix(in srgb, rgb(139, 107, 255) 55%, transparent);
+  transition: transform 200ms var(--dsw-motion-spring), box-shadow 200ms var(--dsw-motion-spring);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-part="composer-primary"]:hover:not(:disabled) {
+  background: var(--dsw-brand-gradient);
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 8px 22px -6px color-mix(in srgb, rgb(139, 107, 255) 70%, transparent);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-part="composer-primary"]:active:not(:disabled) {
+  transform: translateY(-2px) scale(0.97);
+}
+
+html[data-dsh-skin="aaron"] [data-dockkit-float] {
+  background: var(--dsw-glass-fill-raised);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
+  backdrop-filter: var(--dsw-glass-blur-strong);
+  border-radius: var(--dsw-radius-xl);
+  --dsw-elevation-stroke-color: var(--dsw-glass-stroke);
+}
+
+html[data-dsh-skin="aaron"] [data-shortcut-modal="settings"] {
+  background: var(--dsw-glass-fill-thick);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
+  backdrop-filter: var(--dsw-glass-blur-strong);
+  --dsw-elevation-stroke-color: var(--dsw-glass-stroke);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="user-bubble"] {
+  background: var(--dsw-glass-fill-accent);
+  box-shadow:
+    var(--dsw-elevation-panel),
+    inset 0 1px 0 var(--dsw-glass-highlight),
+    inset 0 -1px 0 var(--dsw-glass-rim-bottom);
+  border-radius: 22px;
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-expanded] {
+  margin: 6px 0;
+  overflow: hidden;
+  border-radius: var(--dsw-radius-lg);
+  --dsh-scrollbar-thumb: var(--dsw-alias-scrollbar-bg-l2);
+  --dsh-scrollbar-thumb-hover: var(--dsw-alias-scrollbar-hover-l2);
+  background: var(--dsw-glass-fill);
+  -webkit-backdrop-filter: var(--dsw-glass-blur);
+  backdrop-filter: var(--dsw-glass-blur);
+  box-shadow: var(--dsw-elevation-panel), inset 0 0.5px 0 var(--dsw-glass-highlight);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-expanded] > * > [data-disclosure-header] > [data-disclosure-row] {
+  padding-inline: 12px;
+  border-bottom: 0.5px solid var(--dsw-glass-stroke);
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-expanded] > * > [data-dsh-part="tool-body"] {
+  padding: 2px 10px 10px;
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-expanded] > * > [data-dsh-part="tool-body"] > :is(
+  [data-dsh-surface="tool-io"], [data-terminal], [data-diff], [data-read],
+  [data-dsh-part="tool-image"], [data-search], [data-web]
+),
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-expanded] > * > [data-dsh-part="tool-body"] > [data-dsh-part="tool-code-scroll"] > .md-code-block {
+  margin: 0;
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"] > * > [data-disclosure-header] > [data-disclosure-row] {
+  position: relative;
+  overflow: hidden;
+}
+
+html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-state="running"] > * > [data-disclosure-header] > [data-disclosure-row]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--dsw-alias-bg-base) 60%, transparent) 55%,
+    transparent 100%
+  );
+  animation: dsh-skin-tool-row-sweep 2.6s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes dsh-skin-tool-row-sweep {
+  0% { left: -300px; }
+  90%, 100% { left: 100%; }
+}

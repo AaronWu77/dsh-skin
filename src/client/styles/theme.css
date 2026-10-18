@@ -1,0 +1,114 @@
+/* Personal overrides: base.css */
+html[data-dsh-skin="aaron"] {
+  --dsw-motion-spring: cubic-bezier(0.32, 0.72, 0, 1)
+}
+/* Personal overrides: design-platform.css */
+html[data-dsh-skin="aaron"] body {
+  --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.07);
+  --dsw-alias-markdown-code-block: rgba(24, 24, 33, 0.78);
+  --dsw-code-ink: rgba(233, 236, 244, 0.94);
+  --dsw-code-ink-secondary: rgba(233, 236, 244, 0.76);
+  --dsw-code-ink-tertiary: rgba(233, 236, 244, 0.52);
+  --dsw-code-link: rgb(116, 192, 252);
+  --dsw-glass-blur: blur(28px) saturate(180%);
+  --dsw-glass-blur-strong: blur(44px) saturate(190%);
+  --dsw-glass-blur-thin: blur(14px) saturate(160%);
+  --dsw-glass-fill: rgba(255, 255, 255, 0.46);
+  --dsw-glass-fill-raised: rgba(255, 255, 255, 0.66);
+  --dsw-glass-fill-sunken: rgba(255, 255, 255, 0.30);
+  --dsw-glass-fill-thick: rgba(255, 255, 255, 0.97);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgba(170, 148, 255, 0.22), rgba(255, 150, 205, 0.17));
+  --dsw-glass-rim-bottom: rgba(255, 255, 255, 0.26);
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(139, 107, 255) 0%, rgb(255, 111, 176) 52%, rgb(74, 155, 255) 100%);
+  --dsw-glass-stroke: rgba(15, 17, 21, 0.07);
+  --dsw-glass-highlight: rgba(255, 255, 255, 0.85);
+  --dsw-glass-scrim: rgba(255, 255, 255, 0.38);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(179, 160, 255, 0.82) 0%, rgba(179, 160, 255, 0.34) 38%, rgba(179, 160, 255, 0.10) 56%, rgba(179, 160, 255, 0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(255, 158, 208, 0.70) 0%, rgba(255, 158, 208, 0.29) 38%, rgba(255, 158, 208, 0.09) 56%, rgba(255, 158, 208, 0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(147, 201, 255, 0.72) 0%, rgba(147, 201, 255, 0.30) 38%, rgba(147, 201, 255, 0.09) 56%, rgba(147, 201, 255, 0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(201, 180, 255, 0.60) 0%, rgba(201, 180, 255, 0.25) 38%, rgba(201, 180, 255, 0.07) 56%, rgba(201, 180, 255, 0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(186, 205, 255, 0.46) 0%, rgba(186, 205, 255, 0.19) 38%, rgba(186, 205, 255, 0.06) 56%, rgba(186, 205, 255, 0) 74%);
+  --dsw-aurora-drift: 32s;
+  --dsw-glass-frame-gap: clamp(10px, 1.4vw, 18px);
+  --dsw-glass-frame-radius: clamp(16px, 1.8vw, 26px);
+  --dsw-glass-window: linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.14) 46%, rgba(196, 208, 255, 0.20) 100%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(247, 244, 255) 0%, rgb(253, 246, 251) 42%, rgb(241, 247, 255) 100%)
+}
+html[data-dsh-skin="aaron"] body[data-ds-dark-theme] {
+  --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.05);
+  --dsw-alias-markdown-code-block: rgba(12, 12, 18, 0.72);
+  --dsw-code-ink: rgba(233, 236, 244, 0.94);
+  --dsw-code-ink-secondary: rgba(233, 236, 244, 0.76);
+  --dsw-code-ink-tertiary: rgba(233, 236, 244, 0.52);
+  --dsw-code-link: rgb(116, 192, 252);
+
+  --dsw-glass-blur: blur(28px) saturate(180%);
+  --dsw-glass-blur-strong: blur(44px) saturate(190%);
+  --dsw-glass-blur-thin: blur(14px) saturate(160%);
+  --dsw-glass-fill: rgba(30, 31, 36, 0.50);
+  --dsw-glass-fill-raised: rgba(38, 39, 45, 0.68);
+  --dsw-glass-fill-sunken: rgba(24, 25, 29, 0.36);
+  --dsw-glass-fill-thick: rgba(38, 39, 45, 0.95);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgba(124, 92, 255, 0.30), rgba(255, 95, 168, 0.24));
+  --dsw-glass-rim-bottom: rgba(255, 255, 255, 0.14);
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(150, 122, 255) 0%, rgb(255, 122, 183) 52%, rgb(92, 168, 255) 100%);
+  --dsw-glass-stroke: rgba(255, 255, 255, 0.09);
+  --dsw-glass-highlight: rgba(255, 255, 255, 0.14);
+  --dsw-glass-scrim: rgba(16, 16, 21, 0.56);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(107, 69, 255, 0.46) 0%, rgba(107, 69, 255, 0.19) 38%, rgba(107, 69, 255, 0.06) 56%, rgba(107, 69, 255, 0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(255, 61, 146, 0.36) 0%, rgba(255, 61, 146, 0.15) 38%, rgba(255, 61, 146, 0.05) 56%, rgba(255, 61, 146, 0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(47, 107, 255, 0.42) 0%, rgba(47, 107, 255, 0.17) 38%, rgba(47, 107, 255, 0.05) 56%, rgba(47, 107, 255, 0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(124, 77, 255, 0.34) 0%, rgba(124, 77, 255, 0.14) 38%, rgba(124, 77, 255, 0.04) 56%, rgba(124, 77, 255, 0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(80, 120, 255, 0.24) 0%, rgba(80, 120, 255, 0.10) 38%, rgba(80, 120, 255, 0.03) 56%, rgba(80, 120, 255, 0) 74%);
+  --dsw-aurora-drift: 32s;
+  --dsw-glass-frame-gap: clamp(10px, 1.4vw, 18px);
+  --dsw-glass-frame-radius: clamp(16px, 1.8vw, 26px);
+  --dsw-glass-window: linear-gradient(135deg, rgba(38, 34, 58, 0.42) 0%, rgba(24, 22, 36, 0.30) 46%, rgba(28, 34, 62, 0.36) 100%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(20, 18, 30) 0%, rgb(26, 20, 28) 42%, rgb(17, 22, 33) 100%)
+}
+/* Personal overrides: gradient-shadow-text.css */
+html[data-dsh-skin="aaron"] body {
+  --dsw-mask-blur: blur(2px)
+}
+html[data-dsh-skin="aaron"] body,
+html[data-dsh-skin="aaron"] body * {
+  --dsw-elevation-panel:
+    var(--dsw-elevation-stroke), 0 1px 2px 0 rgba(0, 0, 0, 0.05),
+    0 6px 20px -6px rgba(0, 0, 0, 0.1),
+    0 22px 48px -18px rgba(0, 0, 0, 0.1);
+  --dsw-elevation-prominent:
+    var(--dsw-elevation-stroke), 0 2px 4px 0 rgba(0, 0, 0, 0.06),
+    0 10px 28px -8px rgba(0, 0, 0, 0.14),
+    0 30px 64px -24px rgba(0, 0, 0, 0.16);
+  --dsw-elevation-soft:
+    var(--dsw-elevation-stroke), 0 1px 2px 0 rgba(0, 0, 0, 0.04),
+    0 8px 24px -8px rgba(0, 0, 0, 0.09),
+    0 24px 56px -20px rgba(0, 0, 0, 0.09)
+}
+/* Personal overrides: shiki.css */
+html[data-dsh-skin="aaron"] {
+  --shiki-foreground: var(--dsw-code-ink);
+  --shiki-token-constant: #4dabf7;
+  --shiki-token-string: #69db7c;
+  --shiki-token-comment: #adb5bd;
+  --shiki-token-keyword: #faa2c1;
+  --shiki-token-parameter: #ffa94d;
+  --shiki-token-function: #b197fc;
+  --shiki-token-string-expression: #8ce99a;
+  --shiki-token-punctuation: #ced4da;
+  --shiki-token-link: #74c0fc
+}
+html[data-dsh-skin="aaron"] body,
+html[data-dsh-skin="aaron"] body[data-ds-dark-theme] {
+  --shiki-foreground: var(--dsw-code-ink);
+  --shiki-background: var(--dsw-alias-markdown-code-block);
+  --shiki-token-constant: #4dabf7;
+  --shiki-token-string: #69db7c;
+  --shiki-token-comment: #adb5bd;
+  --shiki-token-keyword: #faa2c1;
+  --shiki-token-parameter: #ffa94d;
+  --shiki-token-function: #b197fc;
+  --shiki-token-string-expression: #8ce99a;
+  --shiki-token-punctuation: #ced4da;
+  --shiki-token-link: #74c0fc
+}

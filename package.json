@@ -1,0 +1,79 @@
+{
+  "name": "dsh-skin",
+  "version": "0.1.0",
+  "description": "AW/STUDIO branding and the Aurora glass-and-ink skin for DeepSeek Harness.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AaronWu77/dsh-skin.git"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.28.5",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "LICENSE",
+    "DEPLOY.md",
+    "THIRD_PARTY_NOTICES.md",
+    "scripts/install-workspace.ps1",
+    "scripts/rollback-workspace.ps1"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "watch": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "node scripts/check-source.mjs",
+    "test:browser": "node scripts/browser-check.mjs",
+    "test:composition": "node scripts/browser-check.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "4.0.5"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.5",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.2.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-slots": "0.2.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-renderer": "0.2.1-rc.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "@types/node": "22.20.1",
+    "typescript": "6.0.3",
+    "tsdown": "0.22.2",
+    "vitest": "4.1.11",
+    "jsdom": "29.1.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/dom": "10.4.1",
+    "lightningcss": "1.33.0",
+    "postcss": "8.5.6",
+    "playwright": "1.56.1"
+  }
+}
