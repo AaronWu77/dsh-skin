@@ -8,7 +8,7 @@
 & "D:/deepseek-harness/local-plugins/plugins/dsh-skin/scripts/install-workspace.ps1" -CheckOnly
 ```
 
-主工作区必须干净，且与配套 `refactor/dsh-skin` 分支有共同历史。其他进行中的改动须先由其所有者保存；脚本不会 stash、reset 或替你提交。
+主工作区必须干净，且与配套 `refactor/dsh-skin` 分支有共同历史。其他进行中的改动须先由其所有者保存；脚本不会 stash、reset 或替你提交。若主工作区暂时有其他改动，可先用已提交的隔离迁移 worktree 预检和安装：`-HostRoot "D:/deepseek-harness/.worktrees/dsh-skin-migration" -HostMigrationRef refactor/dsh-skin`；此时重启命令应从该 worktree 运行。
 
 停止服务后，在独立 PowerShell 窗口执行：
 

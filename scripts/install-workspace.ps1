@@ -16,7 +16,11 @@ $ProfileRoot = Join-Path $DshHome 'profiles/web'
 if (!(Test-Path -LiteralPath (Join-Path $ProfileRoot 'package.json'))) { throw 'Existing web profile not found; pass -DshHome explicitly.' }
 $dirty = @(git -C $HostRoot status --porcelain)
 if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect Host Git status' }
-if ($dirty.Count) { throw 'Host has local edits; preserve them before migration. No files were changed.' }
+if ($dirty.Count) {
+  $listed = ($dirty | Select-Object -First 12) -join [Environment]::NewLine
+  if ($dirty.Count -gt 12) { $listed += [Environment]::NewLine + ('... and ' + ($dirty.Count - 12) + ' more') }
+  throw ('Host has local edits; no files were changed. Commit or preserve them first, or pass a clean -HostRoot. Files:' + [Environment]::NewLine + $listed)
+}
 $oldHead = (git -C $HostRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve Host HEAD' }
 $newHead = (git -C $HostRoot rev-parse --verify ($HostMigrationRef + '^{commit}')).Trim()
