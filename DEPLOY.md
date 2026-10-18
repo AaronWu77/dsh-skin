@@ -5,15 +5,17 @@
 先做只读预检：
 
 ```powershell
-& "D:/deepseek-harness/local-plugins/plugins/dsh-skin/scripts/install-workspace.ps1" -CheckOnly
+& "D:/deepseek-harness/local-plugins/plugins/dsh-skin/scripts/install-workspace.ps1" -HostRoot "D:/deepseek-harness" -HostMigrationRef "refactor/skin-running-icon" -CheckOnly
 ```
 
-主工作区必须干净，且与配套 `refactor/dsh-skin` 分支有共同历史。其他进行中的改动须先由其所有者保存；脚本不会 stash、reset 或替你提交。若主工作区暂时有其他改动，可先用已提交的隔离迁移 worktree 预检和安装：`-HostRoot "D:/deepseek-harness/.worktrees/dsh-skin-migration" -HostMigrationRef refactor/dsh-skin`；此时重启命令应从该 worktree 运行。
+主工作区必须干净，且与配套 `refactor/skin-running-icon` 分支有共同历史。此分支提供运行图案插槽；`feat/running-icon` 皮肤分支提供 StateDot。其他进行中的改动须先由其所有者保存；脚本不会 stash、reset 或替你提交。若主工作区暂时有其他改动，可传入另一个干净的 `-HostRoot`；安装后必须从该 Host 目录启动。
 
 停止服务后，在独立 PowerShell 窗口执行：
 
 ```powershell
-& "D:/deepseek-harness/local-plugins/plugins/dsh-skin/scripts/install-workspace.ps1"
+git -C "D:/deepseek-harness/local-plugins/plugins/dsh-skin" merge --ff-only feat/running-icon
+if ($LASTEXITCODE -ne 0) { throw "Skin update failed; preserve local changes before retrying." }
+& "D:/deepseek-harness/local-plugins/plugins/dsh-skin/scripts/install-workspace.ps1" -HostRoot "D:/deepseek-harness" -HostMigrationRef "refactor/skin-running-icon"
 if (-not $?) { throw "Installation failed; do not start the server." }
 Set-Location "D:/deepseek-harness"
 pnpm dsh web --no-open
@@ -32,4 +34,4 @@ pnpm dsh web --no-open
 
 回退恢复备份的 profile 文件，在新分支选择原 Host 提交并重建，保留迁移分支，不删除工作区或用户修改。若迁移后出现新提交或本地修改，须人工检查，脚本拒绝覆盖。
 
-首次迁移需要构建和重启。之后只修改皮肤时，在插件目录运行 `pnpm run watch`，构建成功后由 Web HMR 自动替换；插件自己的临时 React 状态可能重置。
+运行图案迁出需要同时更新 Host 和皮肤并重启；禁用皮肤应恢复官方鲸尾，而计时继续。之后只修改皮肤时，在插件目录运行 `pnpm run watch`，构建成功后由 Web HMR 自动替换；插件自己的临时 React 状态可能重置。

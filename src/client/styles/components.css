@@ -1,4 +1,8 @@
 /* Component appearance overrides; layout and interaction remain host-owned. */
+/* Keep the shared spinner in the owner-provided font-scaled footprint and text color. */
+html[data-dsh-skin="aaron"] [data-slot="conversation.chat.flow.running.icon"] svg[data-state="ongoing"] {
+  color: inherit;
+}
 html[data-dsh-skin="aaron"] :is(
   [data-read], [data-diff], [data-search], [data-terminal], [data-web],
   .md-code-block, [data-dsh-surface="json"], [data-dsh-surface="tool-io"]

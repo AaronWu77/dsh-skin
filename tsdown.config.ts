@@ -5,7 +5,7 @@ import { defineConfig } from 'tsdown'
 import { bundle } from 'lightningcss'
 
 const root = dirname(fileURLToPath(import.meta.url))
-const externals = ['react', 'react/jsx-runtime', 'react-dom', '@deepseek-ai/cordis', '@deepseek-ai/dsh-client-ui-slots']
+const externals = ['react', 'react/jsx-runtime', 'react-dom', '@deepseek-ai/cordis', '@deepseek-ai/dsh-client-ui-slots', '@deepseek-ai/dsh-client-ui-primitives']
 
 export default defineConfig([
   { entry: { index: 'src/host/index.ts' }, outDir: 'lib', platform: 'node', format: 'esm', dts: true, fixedExtension: false, clean: false },

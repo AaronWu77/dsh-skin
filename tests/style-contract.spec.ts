@@ -80,13 +80,28 @@ describe('skin stylesheet isolation', () => {
     for (const [name, root] of sheets) {
       expect(ungated(root), name).toEqual([])
       for (const rule of rules(root)) {
-        for (const match of rule.selector.matchAll(/\.([\w-]+)/g)) {
+        // Dotted semantic slot names inside attribute values are not CSS classes.
+        for (const match of rule.selector.replace(/\[[^\]]*]/g, '').matchAll(/\.([\w-]+)/g)) {
           expect(match[1], name + ': ' + rule.selector).toBe('md-code-block')
         }
         expect(rule.selector, name).not.toMatch(/\[class[\s*^$|~]*=/)
       }
       root.walkAtRules(/keyframes$/, rule => { expect(rule.params).toMatch(/^dsh-skin-/) })
     }
+  })
+
+  it('inherits color only in the running-icon slot and leaves Host sizing and shared motion untouched', () => {
+    const selector = GATE + ' [data-slot="conversation.chat.flow.running.icon"] svg[data-state="ongoing"]'
+    expect(declarations('components.css', selector)).toEqual(new Map([['color', 'inherit']]))
+    const dom = new JSDOM('<html data-dsh-skin="aaron"><body><span data-slot="conversation.chat.flow.running.icon"><svg data-state="ongoing" id="running"></svg><span data-state="idle" id="idle"></span></span><svg data-state="ongoing" id="other"></svg></body></html>')
+    try {
+      const document = dom.window.document
+      expect(document.getElementById('running')!.matches(selector)).toBe(true)
+      expect(document.getElementById('idle')!.matches(selector)).toBe(false)
+      expect(document.getElementById('other')!.matches(selector)).toBe(false)
+      document.documentElement.removeAttribute('data-dsh-skin')
+      expect(document.getElementById('running')!.matches(selector)).toBe(false)
+    } finally { dom.window.close() }
   })
 
   it('leaves native drag regions, safe clearance, and scrollbar rendering with the host', () => {
