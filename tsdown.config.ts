@@ -5,12 +5,12 @@ import { defineConfig } from 'tsdown'
 import { bundle } from 'lightningcss'
 
 const root = dirname(fileURLToPath(import.meta.url))
-const externals = ['react', 'react/jsx-runtime', 'react-dom', '@deepseek-ai/cordis', '@deepseek-ai/dsh-client-ui-slots', '@deepseek-ai/dsh-client-ui-primitives']
+const externals = ['react', 'react/jsx-runtime', 'react-dom', '@deepseek-ai/cordis', '@deepseek-ai/dsh-client-ui-slots', '@deepseek-ai/dsh-client-ui-primitives', '@deepseek-ai/dsh-client-ui-settings', '@deepseek-ai/dsh-client-ui-settings/client']
 
 export default defineConfig([
   { entry: { index: 'src/host/index.ts' }, outDir: 'lib', platform: 'node', format: 'esm', dts: true, fixedExtension: false, clean: false },
   {
-    entry: { client: 'src/client/index.ts' }, outDir: 'lib', platform: 'browser', format: 'cjs', dts: false, sourcemap: true, clean: false,
+    entry: { client: 'src/client/index.tsx' }, outDir: 'lib', platform: 'browser', format: 'cjs', dts: false, sourcemap: true, clean: false,
     deps: { neverBundle: source => externals.some(name => source === name || source.startsWith(name + '/')), alwaysBundle: source => !externals.some(name => source === name || source.startsWith(name + '/')) },
     define: { 'process.env.NODE_ENV': JSON.stringify('production') },
     plugins: [{

@@ -1,6 +1,7 @@
 @import "./theme.css";
 @import "./layout.css";
 @import "./components.css";
+@import "./palettes.css";
 
 html[data-dsh-skin="aaron"] [data-dsh-brand="studio"] {
   font-size: 17px;

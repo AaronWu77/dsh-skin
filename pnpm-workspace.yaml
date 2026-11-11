@@ -1,2 +1,6 @@
 packages: []
 minimumReleaseAge: 0
+overrides:
+  '@deepseek-ai/dsh-client-ui-settings': link:D:/deepseek-harness/packages/client/ui-settings
+  '@deepseek-ai/dsh-settings': link:D:/deepseek-harness/packages/settings/settings
+  '@deepseek-ai/schemastery': link:D:/deepseek-harness/vendor/schemastery

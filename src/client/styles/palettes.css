@@ -1,0 +1,95 @@
+/* Palette tokens: one block per preset, light then dark.
+   The default aurora values live in theme.css; a preset only overrides the
+   aurora fields and the brand gradient, so structure and glass stay shared. */
+
+html[data-dsh-skin="aaron"][data-aw-theme="midnight"] body {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(60,120,220) 0%, rgb(40,170,180) 52%, rgb(90,110,230) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(60,120,220)38, rgb(40,170,180)2b);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(150,190,255,.72) 0%, rgba(150,190,255,0.34) 38%, rgba(150,190,255,0.10) 56%, rgba(150,190,255,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(120,220,220,.62) 0%, rgba(120,220,220,0.29) 38%, rgba(120,220,220,0.09) 56%, rgba(120,220,220,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(170,170,255,.66) 0%, rgba(170,170,255,0.30) 38%, rgba(170,170,255,0.09) 56%, rgba(170,170,255,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(140,200,235,.55) 0%, rgba(140,200,235,0.25) 38%, rgba(140,200,235,0.07) 56%, rgba(140,200,235,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(160,190,240,.42) 0%, rgba(160,190,240,0.19) 38%, rgba(160,190,240,0.06) 56%, rgba(160,190,240,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(240,245,252) 0%, rgb(238,246,248) 42%, rgb(235,241,252) 100%);
+  --dsw-specific-sticky-fill: rgb(240,245,252);
+}
+html[data-dsh-skin="aaron"][data-aw-theme="midnight"] body[data-ds-dark-theme] {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(90,150,245) 0%, rgb(60,200,200) 52%, rgb(120,140,255) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(90,150,245)4d, rgb(60,200,200)3d);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(40,80,160,.50) 0%, rgba(40,80,160,0.19) 38%, rgba(40,80,160,0.06) 56%, rgba(40,80,160,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(20,110,120,.42) 0%, rgba(20,110,120,0.15) 38%, rgba(20,110,120,0.05) 56%, rgba(20,110,120,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(50,60,150,.46) 0%, rgba(50,60,150,0.17) 38%, rgba(50,60,150,0.05) 56%, rgba(50,60,150,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(30,90,130,.36) 0%, rgba(30,90,130,0.14) 38%, rgba(30,90,130,0.04) 56%, rgba(30,90,130,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(40,70,140,.26) 0%, rgba(40,70,140,0.10) 38%, rgba(40,70,140,0.03) 56%, rgba(40,70,140,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(10,14,22) 0%, rgb(8,16,20) 42%, rgb(10,13,24) 100%);
+  --dsw-specific-sticky-fill: rgb(10,14,22);
+}
+
+html[data-dsh-skin="aaron"][data-aw-theme="ember"] body {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(230,120,60) 0%, rgb(220,70,110) 52%, rgb(240,160,50) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(230,120,60)38, rgb(220,70,110)2b);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(255,190,140,.78) 0%, rgba(255,190,140,0.34) 38%, rgba(255,190,140,0.10) 56%, rgba(255,190,140,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(255,150,150,.66) 0%, rgba(255,150,150,0.29) 38%, rgba(255,150,150,0.09) 56%, rgba(255,150,150,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(255,215,150,.70) 0%, rgba(255,215,150,0.30) 38%, rgba(255,215,150,0.09) 56%, rgba(255,215,150,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(255,175,120,.56) 0%, rgba(255,175,120,0.25) 38%, rgba(255,175,120,0.07) 56%, rgba(255,175,120,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(255,200,170,.44) 0%, rgba(255,200,170,0.19) 38%, rgba(255,200,170,0.06) 56%, rgba(255,200,170,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(255,248,242) 0%, rgb(255,244,240) 42%, rgb(253,246,248) 100%);
+  --dsw-specific-sticky-fill: rgb(255,248,242);
+}
+html[data-dsh-skin="aaron"][data-aw-theme="ember"] body[data-ds-dark-theme] {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(255,150,80) 0%, rgb(250,100,140) 52%, rgb(255,190,80) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(255,150,80)4d, rgb(250,100,140)3d);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(190,90,30,.44) 0%, rgba(190,90,30,0.19) 38%, rgba(190,90,30,0.06) 56%, rgba(190,90,30,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(170,40,60,.36) 0%, rgba(170,40,60,0.15) 38%, rgba(170,40,60,0.05) 56%, rgba(170,40,60,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(200,130,20,.40) 0%, rgba(200,130,20,0.17) 38%, rgba(200,130,20,0.05) 56%, rgba(200,130,20,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(160,70,30,.32) 0%, rgba(160,70,30,0.14) 38%, rgba(160,70,30,0.04) 56%, rgba(160,70,30,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(150,80,50,.24) 0%, rgba(150,80,50,0.10) 38%, rgba(150,80,50,0.03) 56%, rgba(150,80,50,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(24,16,12) 0%, rgb(26,14,16) 42%, rgb(22,15,10) 100%);
+  --dsw-specific-sticky-fill: rgb(24,16,12);
+}
+
+html[data-dsh-skin="aaron"][data-aw-theme="forest"] body {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(50,140,100) 0%, rgb(130,160,60) 52%, rgb(40,130,140) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(50,140,100)38, rgb(130,160,60)2b);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(150,210,170,.76) 0%, rgba(150,210,170,0.34) 38%, rgba(150,210,170,0.10) 56%, rgba(150,210,170,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(190,220,150,.64) 0%, rgba(190,220,150,0.29) 38%, rgba(190,220,150,0.09) 56%, rgba(190,220,150,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(130,190,200,.68) 0%, rgba(130,190,200,0.30) 38%, rgba(130,190,200,0.09) 56%, rgba(130,190,200,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(170,205,160,.54) 0%, rgba(170,205,160,0.25) 38%, rgba(170,205,160,0.07) 56%, rgba(170,205,160,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(160,200,190,.42) 0%, rgba(160,200,190,0.19) 38%, rgba(160,200,190,0.06) 56%, rgba(160,200,190,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(243,250,245) 0%, rgb(245,250,240) 42%, rgb(240,248,246) 100%);
+  --dsw-specific-sticky-fill: rgb(243,250,245);
+}
+html[data-dsh-skin="aaron"][data-aw-theme="forest"] body[data-ds-dark-theme] {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(70,180,130) 0%, rgb(170,200,90) 52%, rgb(60,180,190) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(70,180,130)4d, rgb(170,200,90)3d);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(30,110,70,.46) 0%, rgba(30,110,70,0.19) 38%, rgba(30,110,70,0.06) 56%, rgba(30,110,70,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(90,110,30,.38) 0%, rgba(90,110,30,0.15) 38%, rgba(90,110,30,0.05) 56%, rgba(90,110,30,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(20,100,110,.42) 0%, rgba(20,100,110,0.17) 38%, rgba(20,100,110,0.05) 56%, rgba(20,100,110,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(40,90,60,.34) 0%, rgba(40,90,60,0.14) 38%, rgba(40,90,60,0.04) 56%, rgba(40,90,60,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(40,90,80,.24) 0%, rgba(40,90,80,0.10) 38%, rgba(40,90,80,0.03) 56%, rgba(40,90,80,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(10,18,14) 0%, rgb(16,20,10) 42%, rgb(8,17,16) 100%);
+  --dsw-specific-sticky-fill: rgb(10,18,14);
+}
+
+html[data-dsh-skin="aaron"][data-aw-theme="graphite"] body {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(90,100,120) 0%, rgb(60,110,190) 52%, rgb(130,140,155) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(90,100,120)38, rgb(60,110,190)2b);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(200,205,215,.70) 0%, rgba(200,205,215,0.34) 38%, rgba(200,205,215,0.10) 56%, rgba(200,205,215,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(180,190,210,.60) 0%, rgba(180,190,210,0.29) 38%, rgba(180,190,210,0.09) 56%, rgba(180,190,210,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(150,175,215,.64) 0%, rgba(150,175,215,0.30) 38%, rgba(150,175,215,0.09) 56%, rgba(150,175,215,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(190,195,205,.52) 0%, rgba(190,195,205,0.25) 38%, rgba(190,195,205,0.07) 56%, rgba(190,195,205,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(175,185,200,.40) 0%, rgba(175,185,200,0.19) 38%, rgba(175,185,200,0.06) 56%, rgba(175,185,200,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(248,249,251) 0%, rgb(246,247,250) 42%, rgb(244,246,250) 100%);
+  --dsw-specific-sticky-fill: rgb(248,249,251);
+}
+html[data-dsh-skin="aaron"][data-aw-theme="graphite"] body[data-ds-dark-theme] {
+  --dsw-brand-gradient: linear-gradient(135deg, rgb(130,140,160) 0%, rgb(80,140,230) 52%, rgb(160,170,185) 100%);
+  --dsw-glass-fill-accent: linear-gradient(135deg, rgb(130,140,160)4d, rgb(80,140,230)3d);
+  --dsw-aurora-1: radial-gradient(70vw 70vw at 12% 4%, rgba(60,65,80,.40) 0%, rgba(60,65,80,0.19) 38%, rgba(60,65,80,0.06) 56%, rgba(60,65,80,0) 72%);
+  --dsw-aurora-2: radial-gradient(64vw 64vw at 92% 2%, rgba(40,50,70,.34) 0%, rgba(40,50,70,0.15) 38%, rgba(40,50,70,0.05) 56%, rgba(40,50,70,0) 72%);
+  --dsw-aurora-3: radial-gradient(78vw 78vw at 42% 112%, rgba(30,60,110,.38) 0%, rgba(30,60,110,0.17) 38%, rgba(30,60,110,0.05) 56%, rgba(30,60,110,0) 72%);
+  --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(50,55,70,.30) 0%, rgba(50,55,70,0.14) 38%, rgba(50,55,70,0.04) 56%, rgba(50,55,70,0) 74%);
+  --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(45,55,75,.22) 0%, rgba(45,55,75,0.10) 38%, rgba(45,55,75,0.03) 56%, rgba(45,55,75,0) 74%);
+  --dsw-glass-canvas: linear-gradient(158deg, rgb(14,15,18) 0%, rgb(16,17,21) 42%, rgb(12,14,19) 100%);
+  --dsw-specific-sticky-fill: rgb(14,15,18);
+}

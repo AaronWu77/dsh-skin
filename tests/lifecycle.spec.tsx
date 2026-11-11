@@ -5,7 +5,7 @@ import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
 import { SlotRegistry } from './built-renderer.ts'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render } from '@testing-library/react'
-import * as Skin from '../src/client/index.ts'
+import * as Skin from '../src/client/index.tsx'
 import { BrandMark, BrandName } from '../src/client/Brand.tsx'
 import { RunningIcon } from '../src/client/RunningIcon.tsx'
 import { installStyles } from '../src/client/style-effect.ts'
@@ -23,9 +23,25 @@ afterEach(async () => {
   document.documentElement.removeAttribute('data-dsh-skin')
   document.querySelectorAll('style[data-dsh-skin-style]').forEach(style => style.remove())
 })
+/** Minimal config-form double: the merged entry reads one appearance namespace. */
+function configFormsStub(): unknown {
+  const value = { theme: 'aurora', pointerTrails: true, trailIntensity: 0.62 }
+  const listen = () => () => {}
+  return {
+    get: () => ({
+      getSnapshot: () => ({ status: 'ready', value, base: undefined, user: undefined, revision: 0, writable: true }),
+      subscribe: listen,
+      set: async () => true,
+      mutate: async () => true,
+    }),
+    whileServed: () => () => {},
+  }
+}
 async function bench(declared = true) {
   const ctx = new Context()
   roots.push(ctx)
+
+  ctx.provide('configForms', configFormsStub())
   await ctx.plugin(SlotRegistry).await()
   const slots = ctx.get('slots')
   if (!slots) throw new Error('SlotRegistry failed to activate')

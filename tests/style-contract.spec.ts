@@ -68,10 +68,10 @@ function ungated(root: Root): string[] {
 const component = (selector: string): Map<string, string> => declarations('components.css', GATE + ' ' + selector)
 
 describe('skin stylesheet isolation', () => {
-  it('loads only its three local override sheets', () => {
+  it('loads only its four local override sheets', () => {
     const imports: string[] = []
     sheets.get('skin.css')!.walkAtRules('import', rule => { imports.push(rule.params) })
-    expect(imports).toEqual(['"./theme.css"', '"./layout.css"', '"./components.css"'])
+    expect(imports).toEqual(['"./theme.css"', '"./layout.css"', '"./components.css"', '"./palettes.css"'])
   })
 
   it('gates every document selector and uses no CSS-module class names', () => {
