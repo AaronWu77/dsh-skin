@@ -4,6 +4,27 @@ description: "Optional AW/STUDIO branding and Aurora glass-and-ink appearance fo
 ---
 # dsh-skin
 
+<a id="plugin-information"></a>
+## Plugin information
+
+Apply reversible AW/STUDIO branding, Aurora colors, and glass surfaces.
+
+| Field | Value |
+|---|---|
+| Package | `dsh-skin` |
+| Checkout version | `0.1.0` |
+| Maintained repository | [AaronWu77/dsh-skin](https://github.com/AaronWu77/dsh-skin) |
+| Package license | MIT |
+
+Package identity, license and upstream declarations are maintained in [package.json](package.json). A checkout version does not establish a published release or verified compatibility; retain the existing qualification and deployment limits below.
+
+<a id="source-and-attribution"></a>
+## Source and attribution
+
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — adapted implementation; MIT; exact upstream baseline not recorded. Extract customized presentation styles into a reversible branding and appearance plugin. [Detailed record](https://github.com/AaronWu77/dsh-skin/blob/HEAD/THIRD_PARTY_NOTICES.md).
+
+The maintained fork and the upstream project are different repositories. Original author, copyright, license and notice statements remain in force. A missing upstream baseline is left unrecorded rather than inferred from the local version.
+
 English | [中文](README.zh.md)
 
 ## Summary
@@ -23,6 +44,12 @@ The browser entry owns one `style[data-dsh-skin-style]` node, the `html[data-dsh
 Rules use semantic tokens and attributes, not CSS-module hashes, copied upstream components, DOM class discovery, or per-message observers. The glyph returns the Host-shared `StateDot` with `state="ongoing"` and the owner-provided `className`; that class preserves content-font-scaled width/height, and a slot-scoped rule inherits text color. It adds no clock, state hooks, observers, or manual DOM. Chat still owns running state, elapsed time, localized text, live announcements, and mount lifetime. Shared spinner animation/reduced-motion behavior remains in ui-primitives. Native drag regions, footer layout, overlay safety, scrollbars, floating-pane collapse, and fullscreen geometry remain Host-owned.
 
 Published npm RC2 ui-chat does not declare this customized Host slot. [companion-host.ts](src/client/companion-host.ts) therefore mirrors only its exact type-only `SlotMap` member: `{ kind: 'single'; scope: 'session'; owner: { readonly className: string | undefined } }`. It creates no runtime declaration, imports no broad Chat implementation, and uses no unsafe registration casts. Keep this mirror identical to the companion Host; [companion-host-types.ts](tests/companion-host-types.ts) checks that both declarations merge and preserve the exact owner shape. ui-primitives is a pinned build dependency and a Host-provided browser external, never bundled as a private spinner copy.
+
+## Window corners
+
+The inset window rounds only its exposed edges. A hidden sidebar transfers its left corners to the center; an open right panel clips its own right corners without clipping fixed floating panes. A visible bottom-slot occupant owns the lower corners; empty outlets and occupants using `hidden` retain the column corners. Fullscreen panels keep viewport geometry. The outer canvas stays square without a window shadow; only the inset window uses circular corners. The sidebar glass and its column share the same radius so the filter cannot tint the canvas outside the curve.
+
+Run `node tests/window-corners.browser.mjs` against the companion Host checkout to check both palettes, drawer and desktop layouts, right-panel clipping, bottom-slot visibility, fixed floating panes, fullscreen, and skin removal. This browser fixture uses the Host stylesheets without starting a server; it does not replace native desktop acceptance.
 
 ## Development and hot reload
 

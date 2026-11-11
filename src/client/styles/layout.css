@@ -1,39 +1,108 @@
+/* Aurora frame: the skin owns the canvas, the window panel and the ambient layer. */
 html[data-dsh-skin="aaron"] [data-dsh-surface="frame"] {
+  position: relative;
+  /* Own stacking context so the aurora can sit at a negative z-index: above the
+     canvas background, below every column. */
+  isolation: isolate;
   padding: var(--dsw-glass-frame-gap);
+  border-radius: 0;
   background: var(--dsw-glass-canvas);
+  box-shadow: none;
 }
-html[data-dsh-skin="aaron"] [data-shell-window] {
-  border-radius: var(--dsw-glass-frame-radius);
-  background: var(--dsw-glass-window);
-  box-shadow: var(--dsw-elevation-prominent);
-}
+
 html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] {
   display: block;
   position: absolute;
   inset: -18%;
-  z-index: 0;
+  z-index: -1;
+  /* A backdrop wash, not a foreground layer: content stays readable. */
+  opacity: 0.55;
   pointer-events: none;
   background-image:
     var(--dsw-aurora-1), var(--dsw-aurora-2), var(--dsw-aurora-3),
     var(--dsw-aurora-4), var(--dsw-aurora-5);
   animation: dsh-skin-aurora-drift var(--dsw-aurora-drift) var(--ds-ease-in-out) infinite;
 }
-html[data-dsh-skin="aaron"] [data-dsh-part="sidebar-glass"] {
-  display: block;
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+
+/* Round only the window perimeter; internal column and row seams stay square. */
+html[data-dsh-skin="aaron"] [data-dsh-surface="frame"] {
+  --dsh-skin-row-bottom-radius: var(--dsw-glass-frame-radius);
+  --dsh-skin-center-left-radius: 0px;
+  --dsh-skin-center-right-radius: 0px;
+  corner-shape: round;
+}
+html[data-dsh-skin="aaron"] [data-dsh-surface="frame"][data-rightbar-collapsed] {
+  --dsh-skin-center-right-radius: var(--dsw-glass-frame-radius);
+}
+html[data-dsh-skin="aaron"] [data-dsh-surface="frame"][data-sidebar-drawer],
+html[data-dsh-skin="aaron"][data-platform="darwin"] [data-dsh-surface="frame"][data-sidebar-collapsed],
+html[data-dsh-skin="aaron"][data-windows-titlebar] [data-dsh-surface="frame"][data-sidebar-collapsed] {
+  --dsh-skin-center-left-radius: var(--dsw-glass-frame-radius);
+}
+html[data-dsh-skin="aaron"] [data-dsh-part="sidebar-column"] {
+  --dsh-skin-sidebar-radius: var(--dsw-glass-frame-radius) 0 0 var(--dsh-skin-row-bottom-radius);
+  border-radius: var(--dsh-skin-sidebar-radius);
+  corner-shape: round;
+}
+html[data-dsh-skin="aaron"] [data-dsh-surface="center"] {
+  border-radius:
+    var(--dsh-skin-center-left-radius) var(--dsh-skin-center-right-radius)
+    min(var(--dsh-skin-center-right-radius), var(--dsh-skin-row-bottom-radius))
+    min(var(--dsh-skin-center-left-radius), var(--dsh-skin-row-bottom-radius));
+  corner-shape: round;
+}
+/* The track must not clip: docked panels overhang it and fixed panes escape it. */
+html[data-dsh-skin="aaron"] [data-rightbar-col],
+html[data-dsh-skin="aaron"] [data-sidebar-right-panel="push"] {
+  border-radius: 0 var(--dsw-glass-frame-radius) var(--dsh-skin-row-bottom-radius) 0;
+  corner-shape: round;
+}
+/* Empty outlet anchors and retained hidden occupants reserve no bottom row. */
+html[data-dsh-skin="aaron"] [data-dsh-surface="frame"]:has(> [data-shell-bottom] > [data-slot="shell.bottom"] > :not([hidden])) {
+  --dsh-skin-row-bottom-radius: 0px;
+}
+html[data-dsh-skin="aaron"] [data-shell-bottom] {
+  border-radius: 0 0 var(--dsw-glass-frame-radius) var(--dsw-glass-frame-radius);
+  corner-shape: round;
+}
+/* The mobile drawer is a separate panel, not the window's left column. */
+html[data-dsh-skin="aaron"] [data-dsh-surface="frame"][data-sidebar-drawer] > [data-dsh-part="sidebar-column"] {
+  --dsh-skin-sidebar-radius: var(--dsw-glass-frame-radius);
+  inset: var(--dsw-glass-frame-gap) auto var(--dsw-glass-frame-gap) var(--dsw-glass-frame-gap);
+}
+
+/* The centre column is the frosted window: the aurora reads through it blurred. */
+html[data-dsh-skin="aaron"] [data-dsh-surface="center"] {
+  background: var(--dsw-glass-window);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
+  backdrop-filter: var(--dsw-glass-blur-strong);
+}
+
+/* The current shell renders one grid frame: the sidebar column is its own
+   glass surface, without a separate sidebar-glass layer. */
+html[data-dsh-skin="aaron"] [data-dsh-surface="sidebar"] {
+  /* Match the paint/filter edge as well as the clipping column; slot anchors
+     between them do not inherit border-radius. */
+  border-radius: var(--dsh-skin-sidebar-radius);
+  corner-shape: round;
+  position: relative;
   background: var(--dsw-glass-fill);
   -webkit-backdrop-filter: var(--dsw-glass-blur);
   backdrop-filter: var(--dsw-glass-blur);
   border-right: 0.5px solid var(--dsw-glass-stroke);
 }
+
 @keyframes dsh-skin-aurora-drift {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1.04); }
   50% { transform: translate3d(3%, -2%, 0) scale(0.98); }
 }
-html[data-dsh-skin="aaron"] [data-dsh-surface="sidebar"] { position: relative; background: transparent; }
-html[data-dsh-skin="aaron"][data-windows-titlebar] [data-dsh-surface="frame"] { padding-top: calc(var(--dsw-glass-frame-gap) + var(--dsh-windows-titlebar-height)); }
+
+html[data-dsh-skin="aaron"][data-windows-titlebar] [data-dsh-surface="frame"] {
+  padding-top: calc(var(--dsw-glass-frame-gap) + var(--dsh-windows-titlebar-height));
+}
+
 html[data-dsh-skin="aaron"] [data-sidebar-right-panel]::before { background: var(--dsw-glass-scrim); }
-@media (prefers-reduced-motion: reduce) { html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] { animation: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] { animation: none; }
+}

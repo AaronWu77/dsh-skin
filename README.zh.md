@@ -4,6 +4,27 @@ description: "为定制 RC2 Host 提供可选的 AW/STUDIO 品牌及极光玻璃
 ---
 # dsh-skin
 
+<a id="plugin-information"></a>
+## 插件信息
+
+应用可撤销的 AW/STUDIO 品牌、Aurora 配色与玻璃质感界面。
+
+| 字段 | 内容 |
+|---|---|
+| 包名 | `dsh-skin` |
+| 当前 checkout 版本 | `0.1.0` |
+| 维护仓库 | [AaronWu77/dsh-skin](https://github.com/AaronWu77/dsh-skin) |
+| 包许可证 | MIT |
+
+包身份、许可证和上游声明以 [package.json](package.json) 为准。checkout 版本不代表已发布版本或经过验证的兼容性；下文已有的验证范围与部署限制仍然适用。
+
+<a id="source-and-attribution"></a>
+## 来源与归属
+
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — 基于上游改造; MIT; 未记录精确上游基准。 将定制展示样式提取为可撤销的品牌与外观插件。 [详细记录](https://github.com/AaronWu77/dsh-skin/blob/HEAD/THIRD_PARTY_NOTICES.md)。
+
+维护中的 fork 与上游项目属于不同仓库。原作者、版权、许可证与通知声明继续保留；缺失的上游基准不根据本地版本推断。
+
 [English](README.md) | 中文
 
 ## 概述
@@ -23,6 +44,12 @@ description: "为定制 RC2 Host 提供可选的 AW/STUDIO 品牌及极光玻璃
 规则使用语义 token 和属性，不依赖 CSS Modules hash、复制的上游组件、DOM 类名发现或逐消息观察器。图标返回 Host 共享的 `StateDot`，传入 `state="ongoing"` 及所有者提供的 `className`；该类保留随内容字号变化的宽高，插槽作用域规则让图标继承文字颜色。不增加时钟、状态 Hook、观察器或手工 DOM。Chat 仍持有运行状态、计时、本地化文本、无障碍播报及挂载生命周期。共享旋转动画和减少动态效果行为仍由 ui-primitives 提供。原生拖拽区、底部布局、浮层安全、滚动条、浮动面板折叠和全屏几何仍由 Host 持有。
 
 npm 发布版 RC2 ui-chat 没有声明这个定制 Host 插槽，因此 [companion-host.ts](src/client/companion-host.ts) 仅镜像其精确的纯类型 `SlotMap` 成员：`{ kind: 'single'; scope: 'session'; owner: { readonly className: string | undefined } }`。它不创建运行时声明、不导入庞大的 Chat 实现，也不使用不安全的注册类型断言。镜像必须与配套 Host 保持一致；[companion-host-types.ts](tests/companion-host-types.ts) 验证两份声明可合并且所有者类型精确。ui-primitives 是固定版本的构建依赖，也是由 Host 提供的浏览器 external，不会把私有旋转器副本打包进去。
+
+## 窗口圆角
+
+内嵌窗口仅在外露边缘保留圆角。侧栏完全隐藏时，中栏接管左侧圆角；右面板展开时裁剪自身右侧圆角，不裁剪固定定位的浮动面板。底部插槽内容可见时接管下方圆角；空插槽和使用 `hidden` 的内容保留列容器圆角。全屏面板保持视口几何。最外层画布保持直角且不带窗口阴影，仅内窗使用圆弧。侧栏玻璃层与列容器使用相同圆角，避免模糊层在圆弧外给画布染色。
+
+在配套 Host checkout 上运行 `node tests/window-corners.browser.mjs`，检查深浅配色、抽屉和桌面布局、右面板裁剪、底部插槽可见性、固定定位浮窗、全屏及皮肤移除。此浏览器夹具使用 Host 样式表，不启动服务器，不能代替原生桌面验收。
 
 ## 开发与热更新
 

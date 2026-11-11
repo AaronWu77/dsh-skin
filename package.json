@@ -15,6 +15,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "exports": {
+    "./locale/*.json": "./locale/*.json",
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
@@ -23,6 +24,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "locale/*.json",
     "lib",
     "cordis.patch.yml",
     "README.md",
@@ -43,6 +45,23 @@
     "test:composition": "node scripts/browser-check.mjs"
   },
   "dsh": {
+    "documentation": {
+      "en": "https://github.com/AaronWu77/dsh-skin/blob/HEAD/README.md",
+      "zh": "https://github.com/AaronWu77/dsh-skin/blob/HEAD/README.zh.md"
+    },
+    "upstreams": [
+      {
+        "name": "DeepSeek Harness",
+        "repository": "https://github.com/deepseek-ai/deepseek-harness",
+        "relation": "adapted",
+        "license": "MIT",
+        "changes": {
+          "en": "Extract customized presentation styles into a reversible branding and appearance plugin.",
+          "zh": "将定制展示样式提取为可撤销的品牌与外观插件。"
+        },
+        "record": "https://github.com/AaronWu77/dsh-skin/blob/HEAD/THIRD_PARTY_NOTICES.md"
+      }
+    ],
     "bundle": {
       "patch": "./cordis.patch.yml"
     },

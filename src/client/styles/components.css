@@ -1,8 +1,20 @@
 /* Component appearance overrides; layout and interaction remain host-owned. */
 /* Keep the shared spinner in the owner-provided font-scaled footprint and text color. */
-html[data-dsh-skin="aaron"] [data-slot="conversation.chat.flow.running.icon"] svg[data-state="ongoing"] {
-  color: inherit;
+html[data-dsh-skin="aaron"] [data-dsh-part="running-glyph"] > svg { display: none; }
+html[data-dsh-skin="aaron"] [data-dsh-part="running-glyph"]::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dsw-accent, currentColor);
+  animation: dsh-skin-running-pulse 1.4s ease-in-out infinite;
 }
+@keyframes dsh-skin-running-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.86); }
+}
+
 html[data-dsh-skin="aaron"] :is(
   [data-read], [data-diff], [data-search], [data-terminal], [data-web],
   .md-code-block, [data-dsh-surface="json"], [data-dsh-surface="tool-io"]
