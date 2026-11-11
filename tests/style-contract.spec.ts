@@ -90,17 +90,26 @@ describe('skin stylesheet isolation', () => {
     }
   })
 
-  it('inherits color only in the running-icon slot and leaves Host sizing and shared motion untouched', () => {
-    const selector = GATE + ' [data-slot="conversation.chat.flow.running.icon"] svg[data-state="ongoing"]'
-    expect(declarations('components.css', selector)).toEqual(new Map([['color', 'inherit']]))
-    const dom = new JSDOM('<html data-dsh-skin="aaron"><body><span data-slot="conversation.chat.flow.running.icon"><svg data-state="ongoing" id="running"></svg><span data-state="idle" id="idle"></span></span><svg data-state="ongoing" id="other"></svg></body></html>')
+  it('replaces only the Host running glyph and leaves Host sizing and shared motion untouched', () => {
+    // The Host marks its own running indicator with data-dsh-part="running-glyph"; the skin
+    // swaps that glyph for a pulsing dot instead of restyling a shared svg selector.
+    const wrapper = GATE + ' [data-dsh-part="running-glyph"]'
+    expect(declarations('components.css', wrapper + ' > svg')).toEqual(new Map([['display', 'none']]))
+    const dot = declarations('components.css', wrapper + '::before')
+    expect(dot.get('content')).toBe('""')
+    expect(dot.get('width')).toBe('8px')
+    expect(dot.get('height')).toBe('8px')
+    expect(dot.get('border-radius')).toBe('50%')
+    expect(dot.get('background')).toBe('var(--dsw-accent, currentColor)')
+    expect(dot.get('animation')).toContain('dsh-skin-running-pulse')
+    const dom = new JSDOM('<html data-dsh-skin="aaron"><body><span data-dsh-part="running-glyph" id="glyph"><svg id="hostSvg"></svg></span><span data-dsh-part="other" id="other"></span></body></html>')
     try {
       const document = dom.window.document
-      expect(document.getElementById('running')!.matches(selector)).toBe(true)
-      expect(document.getElementById('idle')!.matches(selector)).toBe(false)
-      expect(document.getElementById('other')!.matches(selector)).toBe(false)
+      expect(document.getElementById('glyph')!.matches(wrapper)).toBe(true)
+      expect(document.getElementById('hostSvg')!.matches(wrapper + ' > svg')).toBe(true)
+      expect(document.getElementById('other')!.matches(wrapper)).toBe(false)
       document.documentElement.removeAttribute('data-dsh-skin')
-      expect(document.getElementById('running')!.matches(selector)).toBe(false)
+      expect(document.getElementById('glyph')!.matches(wrapper)).toBe(false)
     } finally { dom.window.close() }
   })
 
@@ -147,16 +156,22 @@ describe('backdrop-filter and scrollbar rendering safety', () => {
     expect(expanded.get('background')).toBe('var(--dsw-glass-fill)')
   })
 
-  it('keeps blur on the sidebar leaf rather than a fixed-overlay ancestor', () => {
-    for (const selector of ['[data-dsh-surface="frame"]', '[data-shell-window]', '[data-dsh-surface="sidebar"]']) {
+  it('keeps blur on the columns rather than a fixed-overlay ancestor', () => {
+    // The frame itself owns no blur; each glass column carries its own filter so a
+    // fixed overlay never becomes the backdrop root.
+    for (const selector of ['[data-dsh-surface="frame"]']) {
       const values = declarations('layout.css', GATE + ' ' + selector)
       for (const property of ['backdrop-filter', '-webkit-backdrop-filter', 'filter', 'transform', 'z-index']) {
         expect(values.has(property), selector + ': ' + property).toBe(false)
       }
     }
-    const leaf = declarations('layout.css', GATE + ' [data-dsh-part="sidebar-glass"]')
-    expect(leaf.get('backdrop-filter')).toBe('var(--dsw-glass-blur)')
-    expect(leaf.get('pointer-events')).toBe('none')
+    for (const [selector, blur] of [
+      ['[data-dsh-surface="center"]', 'var(--dsw-glass-blur-strong)'],
+      ['[data-dsh-surface="sidebar"]', 'var(--dsw-glass-blur)'],
+    ] as const) {
+      const values = declarations('layout.css', GATE + ' ' + selector)
+      expect(values.get('backdrop-filter'), selector).toBe(blur)
+    }
   })
 })
 
