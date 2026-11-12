@@ -31,6 +31,8 @@ description: "为定制 RC2 Host 提供可选的 AW/STUDIO 品牌及极光玻璃
 
 可撤销的浏览器皮肤插件，提供 AW/STUDIO 品牌、极光配色、玻璃表面、易读的墨色代码卡及共享 StateDot 运行图标。不修改模型、工具、鉴权、权限、Session 数据或会话首页图案。
 
+Host 提供 `dsh-skin` 设置时，设置中的 **AW Studio** 页面可控制配色、指针轨迹和轨迹强度。设置控件接受 0.2 到 1 之间的有限轨迹强度。已有的无效值会保留；外观使用 0.62，并提供显式修复操作。Host schema 仍保持宽松，因此直接调用设置 API 仍可能写入无效数值。控件显示 Host 最近接受的值。写入被拒绝时可重试；写入结果无法确认时，控件会停用，直到刷新页面以核对结果。
+
 ## 安装
 
 运行 `pnpm install --frozen-lockfile --ignore-scripts` 和 `pnpm run build` 构建。作为 profile bundle 安装，不修改上游 bundle。首次迁移 Host 请遵循 [DEPLOY.md](DEPLOY.md) 中的停服步骤；直接加载到旧定制 Host 会产生重复样式及不同的品牌尺寸。Host 已迁移且已安装本 bundle 时，使用该文档的日常更新说明；不要重复运行首次迁移安装器或重装其他插件。

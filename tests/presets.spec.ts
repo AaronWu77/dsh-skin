@@ -5,7 +5,7 @@ import {
 } from '../src/client/presets/catalog.ts'
 import {
   AW_STUDIO_TRAIL_INTENSITY_MAX, AW_STUDIO_TRAIL_INTENSITY_MIN,
-  DEFAULT_AW_STUDIO_SETTINGS, SETTINGS_NAMESPACE, decodeAwStudioSettings,
+  DEFAULT_AW_STUDIO_SETTINGS, SETTINGS_NAMESPACE, decodeAwStudioSettings, isTrailIntensity, projectAwStudioSettings,
 } from '../src/settings-contract.ts'
 
 describe('palette catalog', () => {
@@ -66,6 +66,28 @@ describe('settings contract', () => {
     for (const bad of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
       expect(decodeAwStudioSettings({ ...base, trailIntensity: bad }), String(bad)).toBeUndefined()
     }
+  })
+
+  it.each([-2, 2, Number.NaN, Infinity, -Infinity, null])('projects legacy intensity %s without losing the other settings', intensity => {
+    const input = { theme: 'ember', pointerTrails: false, trailIntensity: intensity }
+    expect(projectAwStudioSettings(input)).toEqual({
+      value: { theme: 'ember', pointerTrails: false, trailIntensity: DEFAULT_AW_STUDIO_SETTINGS.trailIntensity },
+      invalidIntensity: true,
+    })
+    expect(input.trailIntensity).toBe(intensity)
+    expect(decodeAwStudioSettings(input)).toBeUndefined()
+  })
+
+  it('keeps valid strengths and rejects unrelated malformed settings', () => {
+    expect(projectAwStudioSettings({ theme: 'ember', pointerTrails: true, trailIntensity: 0.4 }))
+      .toEqual({ value: { theme: 'ember', pointerTrails: true, trailIntensity: 0.4 }, invalidIntensity: false })
+    expect(projectAwStudioSettings({ theme: 'ember', pointerTrails: true, trailIntensity: '0.4' })).toBeUndefined()
+    expect(projectAwStudioSettings({ theme: 'unknown', pointerTrails: true, trailIntensity: 2 })).toBeUndefined()
+    const wire = JSON.parse(JSON.stringify({ theme: 'ember', pointerTrails: false, trailIntensity: Number.NaN }))
+    expect(projectAwStudioSettings(wire)?.invalidIntensity).toBe(true)
+    expect(isTrailIntensity(0.2)).toBe(true)
+    expect(isTrailIntensity(1)).toBe(true)
+    for (const invalid of [-1, 2, Number.NaN, Infinity, null]) expect(isTrailIntensity(invalid)).toBe(false)
   })
 
   it('defaults to trails on with the aurora palette', () => {

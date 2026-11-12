@@ -10,6 +10,7 @@ import { BrandMark, BrandName } from '../src/client/Brand.tsx'
 import { RunningIcon } from '../src/client/RunningIcon.tsx'
 import { installStyles } from '../src/client/style-effect.ts'
 import { companionHostTypeDiagnostics } from './companion-host-types.ts'
+import type { AwStudioSettings } from '../src/settings-contract.ts'
 
 // The primitive is a Host external; test delegation, not its private animation implementation.
 // SlotRegistry below is the real published Cordis service, never a mock.
@@ -21,6 +22,7 @@ afterEach(async () => {
   for (const root of roots.splice(0)) await root.fiber.dispose()
   cleanup()
   document.documentElement.removeAttribute('data-dsh-skin')
+  document.documentElement.removeAttribute('data-aw-theme')
   document.querySelectorAll('style[data-dsh-skin-style]').forEach(style => style.remove())
 })
 /** Minimal config-form double: the merged entry reads one appearance namespace. */
@@ -37,11 +39,12 @@ function configFormsStub(): unknown {
     whileServed: () => () => {},
   }
 }
-async function bench(declared = true) {
+async function bench(declared = true, forms = configFormsStub()) {
   const ctx = new Context()
   roots.push(ctx)
 
-  ctx.provide('configForms', configFormsStub())
+  ctx.provide('configForms', forms)
+  ctx.provide('locale', { register: () => () => {}, bind: () => (key: string) => key })
   await ctx.plugin(SlotRegistry).await()
   const slots = ctx.get('slots')
   if (!slots) throw new Error('SlotRegistry failed to activate')
@@ -162,6 +165,127 @@ describe('running icon lifecycle', () => {
     b.declareIcon()
     expect(b.slots.entries(ICON)).toHaveLength(1)
     expect(selected(b.slots)).toBe(100)
+  })
+})
+
+/** Controlled Host namespace mirror for settings registration lifetimes. */
+function settingsMirror(initial: boolean, value: AwStudioSettings = { theme: 'aurora', pointerTrails: false, trailIntensity: 0.62 }) {
+  let served = initial
+  const listeners = new Set<() => void>()
+  const formListeners = new Set<() => void>()
+  let snapshot = { status: 'ready', value, writable: true }
+  const form = {
+    getSnapshot: () => snapshot,
+    subscribe: (listener: () => void) => { formListeners.add(listener); return () => { formListeners.delete(listener) } },
+    set: async () => true,
+  }
+  return {
+    forms: {
+      get: () => form,
+      whileServed: (_names: readonly string[], register: () => () => void) => {
+        let off: (() => void) | undefined
+        const sync = () => {
+          if (served && off === undefined) off = register()
+          else if (!served && off !== undefined) { off(); off = undefined }
+        }
+        listeners.add(sync)
+        sync()
+        return () => { listeners.delete(sync); off?.() }
+      },
+    },
+    setServed(value: boolean) { served = value; for (const listener of listeners) listener() },
+    setValue(value: AwStudioSettings) { snapshot = { ...snapshot, value }; for (const listener of formListeners) listener() },
+    get listenerCount() { return listeners.size },
+  }
+}
+
+describe('settings section lifecycle', () => {
+  it('waits for a late settings declaration and follows its redeclaration', async () => {
+    const mirror = settingsMirror(true)
+    const b = await bench(false, mirror.forms)
+    const fiber = b.ctx.plugin(Skin)
+    await fiber.await()
+    const declare = () => b.slots.register({ name: 'root', children: {
+      'settings.section': { kind: 'list', scope: 'root' },
+    } }, ({ renderSlot }: PropsRenderSlots<'settings.section'>) => renderSlot('settings.section', { close: () => {} }))
+    let off = declare()
+    expect(b.slots.entries('settings.section').map(row => row.options.id)).toEqual(['aw-studio'])
+    off()
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    off = declare()
+    expect(b.slots.entries('settings.section').map(row => row.options.id)).toEqual(['aw-studio'])
+    await fiber.dispose()
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    off()
+    declare()
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    expect(mirror.listenerCount).toBe(0)
+  })
+
+  it.each([undefined, 'later'])('preserves legacy theme while restoring only its own marker: %s', async later => {
+    document.documentElement.setAttribute('data-aw-theme', 'previous')
+    const legacy = { theme: 'ember', pointerTrails: false, trailIntensity: -1 } as const
+    const mirror = settingsMirror(true, legacy)
+    const b = await bench(false, mirror.forms)
+    const fiber = b.ctx.plugin(Skin)
+    await fiber.await()
+    expect(document.documentElement.getAttribute('data-aw-theme')).toBe('ember')
+    expect(legacy.trailIntensity).toBe(-1)
+    if (later !== undefined) document.documentElement.setAttribute('data-aw-theme', later)
+    await fiber.dispose()
+    expect(document.documentElement.getAttribute('data-aw-theme')).toBe(later ?? 'previous')
+  })
+
+  it('restores the original theme after successive settings updates', async () => {
+    document.documentElement.setAttribute('data-aw-theme', 'previous')
+    const mirror = settingsMirror(true)
+    const b = await bench(false, mirror.forms)
+    const fiber = b.ctx.plugin(Skin)
+    await fiber.await()
+    expect(document.documentElement.getAttribute('data-aw-theme')).toBe('aurora')
+    mirror.setValue({ theme: 'midnight', pointerTrails: false, trailIntensity: 2 })
+    expect(document.documentElement.getAttribute('data-aw-theme')).toBe('midnight')
+    mirror.setValue({ theme: 'ember', pointerTrails: false, trailIntensity: 0.4 })
+    expect(document.documentElement.getAttribute('data-aw-theme')).toBe('ember')
+    await fiber.dispose()
+    expect(document.documentElement.getAttribute('data-aw-theme')).toBe('previous')
+  })
+
+  it('clears its theme marker when no earlier owner supplied one', async () => {
+    const mirror = settingsMirror(true)
+    const b = await bench(false, mirror.forms)
+    const fiber = b.ctx.plugin(Skin)
+    await fiber.await()
+    expect(document.documentElement.hasAttribute('data-aw-theme')).toBe(true)
+    await fiber.dispose()
+    expect(document.documentElement.hasAttribute('data-aw-theme')).toBe(false)
+  })
+
+  it('follows the Host namespace independently from the slot declaration', async () => {
+    const mirror = settingsMirror(false)
+    const b = await bench(false, mirror.forms)
+    const declare = () => b.slots.register({ name: 'root', children: {
+      'settings.section': { kind: 'list', scope: 'root' },
+    } }, ({ renderSlot }: PropsRenderSlots<'settings.section'>) => renderSlot('settings.section', { close: () => {} }))
+    let off = declare()
+    const fiber = b.ctx.plugin(Skin)
+    await fiber.await()
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    mirror.setServed(true)
+    expect(b.slots.entries('settings.section').map(row => row.options.id)).toEqual(['aw-studio'])
+    mirror.setServed(false)
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    off()
+    mirror.setServed(true)
+    off = declare()
+    expect(b.slots.entries('settings.section').map(row => row.options.id)).toEqual(['aw-studio'])
+    await fiber.dispose()
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    expect(mirror.listenerCount).toBe(0)
+    mirror.setServed(false)
+    mirror.setServed(true)
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    off()
   })
 })
 

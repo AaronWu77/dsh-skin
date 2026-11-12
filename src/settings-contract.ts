@@ -29,22 +29,66 @@ export const DEFAULT_AW_STUDIO_SETTINGS: AwStudioSettings = {
 export const AW_STUDIO_TRAIL_INTENSITY_MIN = 0.2
 export const AW_STUDIO_TRAIL_INTENSITY_MAX = 1
 
+/** @param value - Candidate trail strength. @returns Whether it is finite and within the supported range. */
+export function isTrailIntensity(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value)
+    && value >= AW_STUDIO_TRAIL_INTENSITY_MIN && value <= AW_STUDIO_TRAIL_INTENSITY_MAX
+}
+
+/** Decoded settings as served on the wire; null may represent a non-finite stored strength. */
+export interface AwStudioSettingsWire {
+  readonly theme: AwStudioPresetId
+  readonly pointerTrails: boolean
+  readonly trailIntensity: number | null
+}
+
 /**
- * Validate a complete settings value.
- * @param value - candidate read from configuration or the browser.
- * @returns the narrowed settings, or undefined when any field is invalid.
+ * Decode the settings section without discarding a legacy invalid trail strength.
+ * @param input - Candidate read from configuration or the wire.
+ * @returns The accepted section, or undefined for other invalid fields.
  */
-export function decodeAwStudioSettings(value: unknown): AwStudioSettings | undefined {
-  if (typeof value !== 'object' || value === null) return undefined
-  const record = value as Record<string, unknown>
+export function decodeAwStudioSettingsWire(input: unknown): AwStudioSettingsWire | undefined {
+  if (typeof input !== 'object' || input === null) return undefined
+  const record = input as Record<string, unknown>
   const theme = parseAwStudioPreset(record['theme'])
   const pointerTrails = record['pointerTrails']
-  const trailIntensity = record['trailIntensity']
-  if (theme === undefined) return undefined
-  if (typeof pointerTrails !== 'boolean') return undefined
-  if (typeof trailIntensity !== 'number' || !Number.isFinite(trailIntensity)) return undefined
-  if (trailIntensity < AW_STUDIO_TRAIL_INTENSITY_MIN || trailIntensity > AW_STUDIO_TRAIL_INTENSITY_MAX) return undefined
-  return { theme, pointerTrails, trailIntensity }
+  const intensity = record['trailIntensity']
+  if (theme === undefined || typeof pointerTrails !== 'boolean') return undefined
+  // JSON represents a non-finite number as null on the settings wire.
+  if (typeof intensity !== 'number' && intensity !== null) return undefined
+  return { theme, pointerTrails, trailIntensity: intensity }
+}
+
+/** Appearance-safe values and whether the stored trail strength needs repair. */
+export interface AwStudioSettingsProjection {
+  readonly value: AwStudioSettings
+  readonly invalidIntensity: boolean
+}
+
+/**
+ * Project legacy invalid trail strengths to a safe appearance without writing configuration.
+ * @param input - Candidate read from configuration or the wire.
+ * @returns The safe appearance and repair status, or undefined for other invalid fields.
+ */
+export function projectAwStudioSettings(input: unknown): AwStudioSettingsProjection | undefined {
+  const decoded = decodeAwStudioSettingsWire(input)
+  if (decoded === undefined) return undefined
+  const valid = isTrailIntensity(decoded.trailIntensity)
+  return {
+    value: { theme: decoded.theme, pointerTrails: decoded.pointerTrails,
+      trailIntensity: valid ? decoded.trailIntensity : DEFAULT_AW_STUDIO_SETTINGS.trailIntensity },
+    invalidIntensity: !valid,
+  }
+}
+
+/**
+ * Validate a complete settings value.
+ * @param value - Candidate read from configuration or the browser.
+ * @returns The narrowed settings, or undefined when any field is invalid.
+ */
+export function decodeAwStudioSettings(value: unknown): AwStudioSettings | undefined {
+  const projection = projectAwStudioSettings(value)
+  return projection === undefined || projection.invalidIntensity ? undefined : projection.value
 }
 
 /** Every preset id, re-exported for the settings card without duplicating the catalog. */

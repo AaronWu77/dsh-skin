@@ -31,6 +31,8 @@ English | [中文](README.zh.md)
 
 A reversible browser plugin for AW/STUDIO branding, Aurora colors, glass surfaces, readable ink code cards, and a shared StateDot running glyph. It does not change models, tools, authentication, permissions, Session data, or the conversation hero artwork.
 
+The **AW Studio** Settings section controls the palette, pointer trails, and trail strength when the Host serves the `dsh-skin` settings. The Settings controls accept finite trail strength values from 0.2 to 1. An existing invalid value is preserved; the appearance uses 0.62 and offers an explicit repair. The Host schema remains permissive, so direct Settings API writes can still store invalid numeric values. Controls show the latest accepted Host values. A refused write can be retried; an unconfirmed write disables controls until the page is reloaded to check the result.
+
 ## Installation
 
 Build with `pnpm install --frozen-lockfile --ignore-scripts` and `pnpm run build`. Install as a profile bundle, not by editing an upstream bundle. The first Host migration requires the stopped-service procedure in [DEPLOY.md](DEPLOY.md); adding this plugin to the old customized Host duplicates some styles and uses a different brand scale. An already migrated Host with this bundle installed uses that document’s regular-update guidance; do not repeat the first-migration installer or reinstall unrelated plugins.

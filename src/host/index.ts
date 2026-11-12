@@ -1,7 +1,8 @@
 /** AW Studio Host half: declares the appearance configuration; the effects are browser-only. */
+import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import {
-  AW_STUDIO_PRESET_IDS, AW_STUDIO_TRAIL_INTENSITY_MAX, AW_STUDIO_TRAIL_INTENSITY_MIN,
+  AW_STUDIO_PRESET_IDS, isTrailIntensity,
 } from '../settings-contract.ts'
 
 export const name = 'dsh-skin'
@@ -14,16 +15,15 @@ export const Config = z.object({
 }).required().volatile()
 
 /**
- * Reject an out-of-range trail intensity at load instead of painting an invalid opacity.
+ * Keep legacy configuration loadable and report an invalid initial trail intensity.
+ * @param ctx - the Host plugin context.
  * @param config - the resolved volatile configuration reference.
  */
-export function apply(config: { get?: () => unknown }): void {
-  const value = config?.get?.()
+export function apply(ctx: Context, config: { get: () => unknown }): void {
+  const value = config.get()
   if (typeof value !== 'object' || value === null) return
   const intensity = (value as Record<string, unknown>)['trailIntensity']
-  if (typeof intensity === 'number'
-    && (intensity < AW_STUDIO_TRAIL_INTENSITY_MIN || intensity > AW_STUDIO_TRAIL_INTENSITY_MAX)) {
-    throw new Error('dsh-skin: trailIntensity must be between '
-      + AW_STUDIO_TRAIL_INTENSITY_MIN + ' and ' + AW_STUDIO_TRAIL_INTENSITY_MAX)
+  if (!isTrailIntensity(intensity)) {
+    ctx.logger.warn('dsh-skin: invalid trailIntensity; the appearance uses a safe fallback until it is changed in Settings')
   }
 }

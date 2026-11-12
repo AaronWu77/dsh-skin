@@ -1,6 +1,7 @@
 - insert:
     - id: dsh-skin
       name: dsh-skin
+      config: {}
       meta:
         title:
           en: AW / STUDIO Skin

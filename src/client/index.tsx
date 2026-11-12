@@ -16,10 +16,12 @@ import { BrandMark, BrandName } from './Brand.tsx'
 import { RunningIcon } from './RunningIcon.tsx'
 import { installStyles } from './style-effect.ts'
 import { AwStudioSettingsCard } from './settings/AwStudioSettingsCard.tsx'
+import { SettingsWrites } from './settings/settings-writes.ts'
+import { en, zh, type SkinLocaleKey } from './locales.ts'
 import {
-  DEFAULT_AW_STUDIO_SETTINGS, decodeAwStudioSettings, SETTINGS_NAMESPACE,
+  DEFAULT_AW_STUDIO_SETTINGS, projectAwStudioSettings, SETTINGS_NAMESPACE,
 } from '../settings-contract.ts'
-import type { AwStudioSettings } from '../settings-contract.ts'
+import type { AwStudioSettings, AwStudioSettingsWire } from '../settings-contract.ts'
 import type { ConfigForms } from '@deepseek-ai/dsh-client-ui-settings/client'
 
 /**
@@ -36,8 +38,13 @@ declare module '@deepseek-ai/cordis' {
 
 import css from './styles/skin.css?inline'
 
-/** Required client services: slots renders the appearance, configForms carries its settings. */
-export const inject = ['slots', 'configForms']
+/** Required client services for appearance, settings and localized copy. */
+export const inject = ['slots', 'configForms', 'locale']
+
+type SkinLocale = {
+  register(namespace: string, dictionaries: Record<string, Record<SkinLocaleKey, string>>): () => void
+  bind(namespace: string): (key: SkinLocaleKey) => string
+}
 
 /** Appearance used while the Host has not answered the first settings read. */
 const FALLBACK: AwStudioSettings = DEFAULT_AW_STUDIO_SETTINGS
@@ -49,13 +56,24 @@ const FALLBACK: AwStudioSettings = DEFAULT_AW_STUDIO_SETTINGS
 export function apply(ctx: Context): void {
   installStyles(ctx, css)
 
-  const form = ctx.configForms.get<AwStudioSettings>(SETTINGS_NAMESPACE)
-  const snapshot = (): AwStudioSettings => decodeAwStudioSettings(form.getSnapshot().value) ?? FALLBACK
+  const form = ctx.configForms.get<AwStudioSettingsWire>(SETTINGS_NAMESPACE)
+  const writes = new SettingsWrites(form)
+  const locale: SkinLocale = ctx.get('locale')
+  ctx.effect(() => locale.register(SETTINGS_NAMESPACE, { en, zh }), 'dsh-aw-studio: settings dictionaries')
+  ctx.effect(() => () => { writes.dispose() }, 'dsh-aw-studio: settings writes')
+  const t = locale.bind(SETTINGS_NAMESPACE)
+  const snapshot = (): AwStudioSettings => projectAwStudioSettings(form.getSnapshot().value)?.value ?? FALLBACK
   const root = document.documentElement
+  const previousTheme = root.getAttribute('data-aw-theme')
 
   // The ambience restarts on a palette or intensity change without re-installing styles.
   let disposeTrails: (() => void) | undefined
   let applied: AwStudioSettings | undefined
+  ctx.effect(() => () => {
+    if (applied === undefined || root.getAttribute('data-aw-theme') !== applied.theme) return
+    if (previousTheme === null) root.removeAttribute('data-aw-theme')
+    else root.setAttribute('data-aw-theme', previousTheme)
+  }, 'dsh-aw-studio: restore theme marker')
   const render = (settings: AwStudioSettings): void => {
     root.setAttribute('data-aw-theme', settings.theme)
     const unchanged = applied !== undefined
@@ -83,17 +101,18 @@ export function apply(ctx: Context): void {
     }))
 
   // The page is a first-class Settings section, and exists only while the Host serves it.
-  ctx.effect(() => ctx.configForms.whileServed([SETTINGS_NAMESPACE], () => ctx.slots.register({
+  ctx.effect(() => ctx.configForms.whileServed([SETTINGS_NAMESPACE], () => ctx.slots.inject('settings.section', () => ctx.slots.register({
     name: 'settings.section',
     id: 'aw-studio',
     order: 22,
-    label: () => 'AW Studio',
+    locale: SETTINGS_NAMESPACE,
+    label: () => t('nav'),
     inject: () => ({
       presets: Object.entries(AW_STUDIO_PRESETS).map(([id, preset]) => ({ id: id as AwStudioPresetId, ...preset })),
-      current: snapshot,
-      setTheme: async (theme: AwStudioPresetId) => { await form.set('theme', theme) },
-      setPointerTrails: async (pointerTrails: boolean) => { await form.set('pointerTrails', pointerTrails) },
-      setTrailIntensity: async (trailIntensity: number) => { await form.set('trailIntensity', trailIntensity) },
+      hooks: { settings: form, writes },
+      setTheme: (theme: AwStudioPresetId) => writes.set('theme', theme),
+      setPointerTrails: (pointerTrails: boolean) => writes.set('pointerTrails', pointerTrails),
+      setTrailIntensity: (trailIntensity: number) => writes.set('trailIntensity', trailIntensity),
     }),
-  }, AwStudioSettingsCard)), 'dsh-aw-studio: settings page while served')
+  }, AwStudioSettingsCard))), 'dsh-aw-studio: settings page while served')
 }
