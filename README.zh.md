@@ -31,7 +31,7 @@ description: "为定制 RC2 Host 提供可选的 AW/STUDIO 品牌及极光玻璃
 
 可撤销的浏览器皮肤插件，提供 AW/STUDIO 品牌、极光配色、玻璃表面、易读的墨色代码卡及共享 StateDot 运行图标。不修改模型、工具、鉴权、权限、Session 数据或会话首页图案。
 
-Host 提供 `dsh-skin` 设置时，设置中的 **AW Studio** 页面可控制配色、指针轨迹和轨迹强度。设置控件接受 0.2 到 1 之间的有限轨迹强度。已有的无效值会保留；外观使用 0.62，并提供显式修复操作。Host schema 仍保持宽松，因此直接调用设置 API 仍可能写入无效数值。控件显示 Host 最近接受的值。写入被拒绝时可重试；写入结果无法确认时，控件会停用，直到刷新页面以核对结果。
+Host 提供 `dsh-skin` 设置时，设置中的 **AW Studio** 页面可控制配色、指针轨迹和轨迹强度。设置控件接受 0.2 到 1 之间的有限轨迹强度。已有的无效值会保留；外观使用 0.62，并提供显式修复操作。Host schema 仍保持宽松，因此直接调用设置 API 仍可能写入无效数值。控件显示 Host 最近接受的值。写入被拒绝时可重试；写入结果无法确认时，控件会停用，直到刷新页面以核对结果。该行在设置导航中使用星形图标。
 
 ## 安装
 
@@ -41,7 +41,7 @@ Host 提供 `dsh-skin` 设置时，设置中的 **AW Studio** 页面可控制配
 
 ## 所有权与卸载
 
-浏览器入口持有一个 `style[data-dsh-skin-style]` 节点、`html[data-dsh-skin="aaron"]` 标记、两个侧栏品牌插槽贡献及一个 `conversation.chat.flow.running.icon` 贡献，优先级均为 -100。运行图标注入独立于品牌声明；等待 Host 声明，并随声明消失或重建而清理或重新注册。禁用时清除资源，恢复 Host 优先级为 100 的官方鲸鱼；若其他所有者未更改标记，则恢复原值。重复加载会失败，不会堆积 CSS。同一个 single 插槽中同优先级的其他贡献会冲突，请禁用或调整优先级。
+浏览器入口持有一个 `style[data-dsh-skin-style]` 节点、`html[data-dsh-skin="aaron"]` 标记、两个侧栏品牌插槽贡献及一个 `conversation.chat.flow.running.icon` 贡献，优先级均为 -100。另有一个 `settings.section.icon` 贡献提供该页面的导航图标，并随 Host 提供的命名空间和设置页声明一同出现或移除。链接的设置包为其自身的 `@deepseek-ai/dsh-client-ui-slots` 副本补充声明，因此 [AwStudioSettingsIcon.tsx](src/client/AwStudioSettingsIcon.tsx) 以仅类型声明重复该插槽。运行图标注入独立于品牌声明；等待 Host 声明，并随声明消失或重建而清理或重新注册。禁用时清除资源，恢复 Host 优先级为 100 的官方鲸鱼；若其他所有者未更改标记，则恢复原值。重复加载会失败，不会堆积 CSS。同一个 single 插槽中同优先级的其他贡献会冲突，请禁用或调整优先级。
 
 规则使用语义 token 和属性，不依赖 CSS Modules hash、复制的上游组件、DOM 类名发现或逐消息观察器。图标返回 Host 共享的 `StateDot`，传入 `state="ongoing"` 及所有者提供的 `className`；该类保留随内容字号变化的宽高，插槽作用域规则让图标继承文字颜色。不增加时钟、状态 Hook、观察器或手工 DOM。Chat 仍持有运行状态、计时、本地化文本、无障碍播报及挂载生命周期。共享旋转动画和减少动态效果行为仍由 ui-primitives 提供。原生拖拽区、底部布局、浮层安全、滚动条、浮动面板折叠和全屏几何仍由 Host 持有。
 

@@ -1,20 +1,21 @@
 // @vitest-environment jsdom
 import { Context } from '@deepseek-ai/cordis'
-import { StateDot } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconSparkleMedium, StateDot } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { PropsRenderSlots } from '@deepseek-ai/dsh-client-ui-slots'
 import { SlotRegistry } from './built-renderer.ts'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render } from '@testing-library/react'
 import * as Skin from '../src/client/index.tsx'
 import { BrandMark, BrandName } from '../src/client/Brand.tsx'
+import { AwStudioSettingsIcon } from '../src/client/AwStudioSettingsIcon.tsx'
 import { RunningIcon } from '../src/client/RunningIcon.tsx'
 import { installStyles } from '../src/client/style-effect.ts'
 import { companionHostTypeDiagnostics } from './companion-host-types.ts'
 import type { AwStudioSettings } from '../src/settings-contract.ts'
 
-// The primitive is a Host external; test delegation, not its private animation implementation.
+// The primitives are Host externals; test delegation, not their private artwork or animation.
 // SlotRegistry below is the real published Cordis service, never a mock.
-vi.mock('@deepseek-ai/dsh-client-ui-primitives', () => ({ StateDot: vi.fn() }))
+vi.mock('@deepseek-ai/dsh-client-ui-primitives', () => ({ StateDot: vi.fn(), IconSparkleMedium: vi.fn(() => null) }))
 
 const ICON = 'conversation.chat.flow.running.icon'
 const roots: Context[] = []
@@ -259,6 +260,37 @@ describe('settings section lifecycle', () => {
     expect(document.documentElement.hasAttribute('data-aw-theme')).toBe(true)
     await fiber.dispose()
     expect(document.documentElement.hasAttribute('data-aw-theme')).toBe(false)
+  })
+
+  it('registers the sparkle glyph with its settings page and drops it with that page', async () => {
+    const mirror = settingsMirror(true)
+    const b = await bench(false, mirror.forms)
+    const fiber = b.ctx.plugin(Skin)
+    await fiber.await()
+    const declare = () => b.slots.register({ name: 'root', children: {
+      'settings.section': { kind: 'list', scope: 'root' },
+      'settings.section.icon': { kind: 'list', scope: 'root' },
+    } }, ({ renderSlot }: PropsRenderSlots<'settings.section' | 'settings.section.icon'>) =>
+      <>{renderSlot('settings.section', { close: () => {} })}{renderSlot('settings.section.icon', { size: 16, active: false })}</>)
+    const off = declare()
+    expect(b.slots.entries('settings.section').map(row => row.options.id)).toEqual(['aw-studio'])
+    expect(b.slots.entries('settings.section.icon').map(row => row.options.id)).toEqual(['aw-studio'])
+    expect(b.slots.entries('settings.section.icon')[0]?.component).toBe(AwStudioSettingsIcon)
+    for (const active of [false, true]) {
+      const glyph = AwStudioSettingsIcon({ size: 16, active })
+      expect(glyph.type).toBe(IconSparkleMedium)
+      expect(glyph.props).toEqual({ size: 16 })
+    }
+    mirror.setServed(false)
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    expect(b.slots.entries('settings.section.icon')).toHaveLength(0)
+    mirror.setServed(true)
+    expect(b.slots.entries('settings.section.icon').map(row => row.options.id)).toEqual(['aw-studio'])
+    off()
+    expect(b.slots.entries('settings.section.icon')).toHaveLength(0)
+    await fiber.dispose()
+    expect(b.slots.entries('settings.section')).toHaveLength(0)
+    expect(b.slots.entries('settings.section.icon')).toHaveLength(0)
   })
 
   it('follows the Host namespace independently from the slot declaration', async () => {

@@ -35,7 +35,7 @@ describe.skipIf(artifact === undefined)('staged appearance client', () => {
       if (handoff === undefined) throw new Error('appearance bundle did not register its factory')
       const plugin = handoff.factory(name => {
         if (name === 'react/jsx-runtime') return jsxRuntime
-        if (name === '@deepseek-ai/dsh-client-ui-primitives') return { StateDot: () => null }
+        if (name === '@deepseek-ai/dsh-client-ui-primitives') return { StateDot: () => null, IconSparkleMedium: () => null }
         throw new Error('unexpected appearance bundle dependency: ' + name)
       })
       let snapshot: ConfigFormSnapshot<AwStudioSettings> = {

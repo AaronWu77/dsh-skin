@@ -16,6 +16,7 @@ import { BrandMark, BrandName } from './Brand.tsx'
 import { RunningIcon } from './RunningIcon.tsx'
 import { installStyles } from './style-effect.ts'
 import { AwStudioSettingsCard } from './settings/AwStudioSettingsCard.tsx'
+import { AwStudioSettingsIcon } from './AwStudioSettingsIcon.tsx'
 import { SettingsWrites } from './settings/settings-writes.ts'
 import { en, zh, type SkinLocaleKey } from './locales.ts'
 import {
@@ -101,18 +102,27 @@ export function apply(ctx: Context): void {
     }))
 
   // The page is a first-class Settings section, and exists only while the Host serves it.
-  ctx.effect(() => ctx.configForms.whileServed([SETTINGS_NAMESPACE], () => ctx.slots.inject('settings.section', () => ctx.slots.register({
-    name: 'settings.section',
-    id: 'aw-studio',
-    order: 22,
-    locale: SETTINGS_NAMESPACE,
-    label: () => t('nav'),
-    inject: () => ({
-      presets: Object.entries(AW_STUDIO_PRESETS).map(([id, preset]) => ({ id: id as AwStudioPresetId, ...preset })),
-      hooks: { settings: form, writes },
-      setTheme: (theme: AwStudioPresetId) => writes.set('theme', theme),
-      setPointerTrails: (pointerTrails: boolean) => writes.set('pointerTrails', pointerTrails),
-      setTrailIntensity: (trailIntensity: number) => writes.set('trailIntensity', trailIntensity),
-    }),
-  }, AwStudioSettingsCard))), 'dsh-aw-studio: settings page while served')
+  ctx.effect(() => ctx.configForms.whileServed([SETTINGS_NAMESPACE], () => ctx.slots.inject('settings.section', function* () {
+    // The glyph follows the same two lifetimes as its page: the served Host namespace and the section declaration.
+    yield ctx.slots.inject('settings.section.icon', () => ctx.slots.register({
+      name: 'settings.section.icon',
+      id: 'aw-studio',
+      locale: SETTINGS_NAMESPACE,
+      label: () => t('nav'),
+    }, AwStudioSettingsIcon))
+    yield ctx.slots.register({
+      name: 'settings.section',
+      id: 'aw-studio',
+      order: 22,
+      locale: SETTINGS_NAMESPACE,
+      label: () => t('nav'),
+      inject: () => ({
+        presets: Object.entries(AW_STUDIO_PRESETS).map(([id, preset]) => ({ id: id as AwStudioPresetId, ...preset })),
+        hooks: { settings: form, writes },
+        setTheme: (theme: AwStudioPresetId) => writes.set('theme', theme),
+        setPointerTrails: (pointerTrails: boolean) => writes.set('pointerTrails', pointerTrails),
+        setTrailIntensity: (trailIntensity: number) => writes.set('trailIntensity', trailIntensity),
+      }),
+    }, AwStudioSettingsCard)
+  })), 'dsh-aw-studio: settings page while served')
 }
