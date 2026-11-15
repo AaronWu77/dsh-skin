@@ -1,5 +1,6 @@
 {
   "name": "dsh-skin",
+  "icon": "./icon.svg",
   "version": "0.1.0",
   "description": "AW/STUDIO branding and the Aurora glass-and-ink skin for DeepSeek Harness.",
   "type": "module",
@@ -24,6 +25,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "icon.svg",
     "locale/*.json",
     "lib",
     "cordis.patch.yml",
