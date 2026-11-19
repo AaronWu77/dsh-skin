@@ -53,7 +53,7 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="modal"] {
 
 /* The center column owns the glass. The conversation adds only a reading tint. */
 html[data-dsh-skin="aaron"] [data-dsh-surface="conversation"] {
-  background: color-mix(in srgb, var(--dsw-glass-scrim) 25%, transparent);
+  background: color-mix(in srgb, var(--dsw-glass-scrim) 62%, transparent);
 }
 
 /* Follow the root phase when present; embedded or unmarked content owns its own shade. */

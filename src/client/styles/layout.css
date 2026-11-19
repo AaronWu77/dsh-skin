@@ -5,7 +5,7 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="frame"] {
   isolation: isolate;
   padding: var(--dsw-glass-frame-gap);
   border-radius: 0;
-  background: var(--dsw-aurora-canvas);
+  background: var(--dsw-glass-canvas);
   box-shadow: none;
 }
 
@@ -15,7 +15,7 @@ html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] {
   inset: -18%;
   z-index: -1;
   /* A backdrop wash, not a foreground layer: content stays readable. */
-  opacity: 0.55;
+  opacity: 0.42;
   pointer-events: none;
   background-image:
     var(--dsw-aurora-1), var(--dsw-aurora-2), var(--dsw-aurora-3),

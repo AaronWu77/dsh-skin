@@ -1,7 +1,7 @@
 {
   "name": "dsh-skin",
   "icon": "./icon.svg",
-  "version": "0.1.2-rc4.7",
+  "version": "0.1.2-rc4.8",
   "description": "Optional AW/STUDIO brand, Aurora palette and glass surfaces (Settings → Appearance)",
   "type": "module",
   "license": "MIT",
