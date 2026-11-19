@@ -33,7 +33,7 @@ html[data-dsh-skin="aaron"] body {
     var(--dsw-aurora-4), var(--dsw-aurora-5), var(--dsw-glass-canvas);
   --dsw-glass-frame-gap: clamp(10px, 1.4vw, 18px);
   --dsw-glass-frame-radius: clamp(16px, 1.8vw, 26px);
-  --dsw-glass-window: linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.14) 46%, rgba(196, 208, 255, 0.20) 100%);
+  --dsw-glass-window: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.10) 46%, rgba(196, 208, 255, 0.16) 100%);
   --dsw-glass-canvas: linear-gradient(158deg, rgb(247, 244, 255) 0%, rgb(253, 246, 251) 42%, rgb(241, 247, 255) 100%);
   /* The shell paints its sidebar column from this token; keep it translucent so the aurora reads through. */
   --dsw-specific-sidebar-fill: rgba(255, 255, 255, 0.42);

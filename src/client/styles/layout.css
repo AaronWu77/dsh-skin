@@ -5,7 +5,7 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="frame"] {
   isolation: isolate;
   padding: var(--dsw-glass-frame-gap);
   border-radius: 0;
-  background: var(--dsw-glass-canvas);
+  background: var(--dsw-aurora-canvas);
   box-shadow: none;
 }
 
@@ -139,7 +139,7 @@ html[data-dsh-skin="aaron"] [data-sidebar-right-panel]::before { background: var
   }
   html[data-dsh-skin="aaron"] [data-dsh-surface="center"],
   html[data-dsh-skin="aaron"] [data-slot="root"] > :not([data-dsh-surface="frame"]) :where(:has(> [data-slot="main"])) {
-    background: var(--dsw-alias-bg-base);
+    background: var(--dsw-glass-canvas);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }

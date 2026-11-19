@@ -14,7 +14,7 @@ Apply reversible AW/STUDIO branding, Aurora colors, and glass surfaces.
 | Field | Value |
 |---|---|
 | Package | `dsh-skin` |
-| Checkout version | `0.1.2-rc4.3` |
+| Checkout version | `0.1.2-rc4.7` |
 | Maintained repository | [AaronWu77/dsh-skin](https://github.com/AaronWu77/dsh-skin) |
 | Package license | MIT |
 
@@ -50,6 +50,8 @@ The legacy `conversation.chat.flow.running.icon` contribution waits for that slo
 ## Window corners
 
 The inset window rounds only its exposed edges. A hidden sidebar transfers its left corners to the center; an open right panel clips its own right corners without clipping fixed floating panes. A visible bottom-slot occupant owns the lower corners; empty outlets and occupants using `hidden` retain the column corners. Fullscreen panels keep viewport geometry. The outer canvas stays square without a window shadow; only the inset window uses circular corners. The sidebar glass and its column share the same radius so the filter cannot tint the canvas outside the curve.
+
+The conversation header reveals the center glass instead of adding a second fill. The Plugins header uses a thin glass layer at rest and a stronger fill while scrolled. With reduced transparency, the top surfaces use the solid canvas without backdrop blur.
 
 Run `node tests/rc4-artifact.browser.mjs` after building to verify the shipped CSS against rc4 DOM hierarchies and AppFrame styles. A preinstalled Chromium can be selected through `DSH_CHROMIUM_EXECUTABLE`. The fixture does not connect to a server or modify a profile.
 

@@ -51,8 +51,9 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="modal"] {
   --dsw-elevation-stroke-color: var(--dsw-glass-stroke);
 }
 
+/* The center column owns the glass. The conversation adds only a reading tint. */
 html[data-dsh-skin="aaron"] [data-dsh-surface="conversation"] {
-  background: var(--dsw-glass-scrim);
+  background: color-mix(in srgb, var(--dsw-glass-scrim) 25%, transparent);
 }
 
 /* Follow the root phase when present; embedded or unmarked content owns its own shade. */
@@ -64,9 +65,7 @@ html[data-dsh-skin="aaron"] [data-conversation-content]:not([data-dsh-surface="c
 }
 
 html[data-dsh-skin="aaron"] [data-slot="conversation.header"] > header[data-window-drag] {
-  background: var(--dsw-glass-window);
-  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
-  backdrop-filter: var(--dsw-glass-blur-strong);
+  background: transparent;
   border-bottom-color: var(--dsw-glass-stroke);
 }
 
@@ -213,11 +212,26 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-state="running"]
   }
 }
 
+/* Match the host sticky selector so its opaque base cannot win by load order. */
+html[data-dsh-skin="aaron"] [data-plugin-bar][data-natural]::before {
+  background: color-mix(in srgb, var(--dsw-glass-fill-raised) 20%, transparent);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-thin);
+  backdrop-filter: var(--dsw-glass-blur-thin);
+}
+
+html[data-dsh-skin="aaron"] [data-plugin-bar][data-natural][data-compact]::before {
+  background: var(--dsw-glass-fill);
+}
+
 @media (prefers-reduced-transparency: reduce) {
-  html[data-dsh-skin="aaron"] [data-slot="conversation.header"] > header[data-window-drag] {
-    background: var(--dsw-alias-bg-base);
+  html[data-dsh-skin="aaron"] [data-dsh-surface="conversation"] { background: transparent; }
+  html[data-dsh-skin="aaron"] [data-plugin-bar][data-natural]::before {
+    background: transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+  html[data-dsh-skin="aaron"] [data-plugin-bar][data-natural][data-compact]::before {
+    background: var(--dsw-glass-canvas);
   }
   html[data-dsh-skin="aaron"] [data-conversation-content]:not([data-dsh-surface="conversation"] *) { background-image: none; }
   html[data-dsh-skin="aaron"] [data-composer-card],
@@ -226,11 +240,4 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="tool-call"][data-state="running"]
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-}
-
-/* Plugin pages paint an opaque sticky bar from --dsw-alias-bg-base; give it the shared glass so it matches the header row. */
-html[data-dsh-skin="aaron"] [data-plugin-bar]::before {
-  background: var(--dsw-glass-fill-raised);
-  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
-  backdrop-filter: var(--dsw-glass-blur-strong);
 }

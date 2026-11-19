@@ -112,6 +112,7 @@ function markup({ dark, platform = '', phase = 'active', marked = true, right = 
         ` + (marked ? '<div id="ambient" data-dsh-part="ambient" aria-hidden="true"></div>' : '') + `
       </div>
     </div></div>
+    <div id="plugin-bar" class="fixture-plugin-bar" data-plugin-bar data-natural>Plugins</div>
     <div id="modal" role="dialog" aria-modal="true"` + surface('modal') + `>Dialog</div>
   </body></html>`
 }
@@ -127,6 +128,9 @@ try {
     await page.setContent(markup(options))
     await page.addStyleTag({ content: palette + frame + hostStyle })
     await page.addStyleTag({ content: css })
+    await page.addStyleTag({ content: `
+      .fixture-plugin-bar[data-natural]::before { content:""; background:var(--dsw-alias-bg-base); }
+    ` })
     await page.locator('html').evaluate(el => { el.dataset.dshSkin = 'aaron' })
   }
   const property = (selector, name, pseudo) => page.locator(selector).evaluate((el, [prop, part]) =>
@@ -134,7 +138,11 @@ try {
   const has = async (selector, name, value, pseudo) => assert.equal(await property(selector, name, pseudo), value, selector + ' ' + name)
   const gradient = async selector => assert.match(await property(selector, 'background-image'), /gradient/, selector)
   const blur = async (selector, size) => assert.match(await property(selector, 'backdrop-filter'), new RegExp('^blur\\(' + size + 'px\\)'), selector)
-  const topbar = async () => { await gradient('#topbar'); await blur('#topbar', 44) }
+  const topbar = async () => {
+    await has('#topbar', 'background-color', 'rgba(0, 0, 0, 0)')
+    await has('#topbar', 'background-image', 'none')
+    await has('#topbar', 'backdrop-filter', 'none')
+  }
   const handleOffset = (handle, column, edge) => page.evaluate(([handle, column, edge]) => {
     const hit = document.querySelector(handle).getBoundingClientRect()
     const box = document.querySelector(column).getBoundingClientRect()
@@ -157,6 +165,12 @@ try {
     await has('#main-panel', 'background-image', 'none')
     await topbar()
     await has('#topbar', 'border-bottom-style', 'solid')
+    const barAtRest = await property('#plugin-bar', 'background-color', '::before')
+    assert.notEqual(barAtRest, 'rgb(255, 255, 255)')
+    assert.match(await property('#plugin-bar', 'backdrop-filter', '::before'), /^blur\(14px\)/)
+    await page.locator('#plugin-bar').evaluate(el => { el.dataset.compact = '' })
+    assert.notEqual(await property('#plugin-bar', 'background-color', '::before'), barAtRest)
+    await has('#plugin-bar', 'background-color', dark ? 'rgba(30, 31, 36, 0.5)' : 'rgba(255, 255, 255, 0.46)', '::before')
     assert.notEqual(await property('#conversation', 'background-color'), 'rgba(0, 0, 0, 0)')
     await has('#content', 'background-image', 'none')
     await gradient('#seat')
@@ -259,7 +273,11 @@ try {
       await has(marked ? '#center' : '#main-panel', 'backdrop-filter', 'none')
       await has('#sidebar-col', 'backdrop-filter', 'none')
       await has('#composer', 'backdrop-filter', 'none')
-      await has('#topbar', 'backdrop-filter', 'none')
+      await topbar()
+      await has('#plugin-bar', 'backdrop-filter', 'none', '::before')
+      await has('#plugin-bar', 'background-color', 'rgba(0, 0, 0, 0)', '::before')
+      await page.locator('#plugin-bar').evaluate(el => { el.dataset.compact = '' })
+      assert.match(await property('#plugin-bar', 'background-image', '::before'), /^linear-gradient/)
     }
   } finally { await cdp.detach() }
   checks.push('reduced transparency in marked and unmarked layouts')
