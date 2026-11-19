@@ -2,7 +2,7 @@
   "name": "dsh-skin",
   "icon": "./icon.svg",
   "version": "0.1.2-rc4.4",
-  "description": "AW/STUDIO branding and the Aurora glass-and-ink skin for DeepSeek Harness.",
+  "description": "Optional AW/STUDIO brand, Aurora palette and glass surfaces (Settings → Appearance)",
   "type": "module",
   "license": "MIT",
   "repository": {
