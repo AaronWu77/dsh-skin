@@ -1,7 +1,7 @@
 {
   "name": "dsh-skin",
   "icon": "./icon.svg",
-  "version": "0.1.0",
+  "version": "0.1.2-rc4.4",
   "description": "AW/STUDIO branding and the Aurora glass-and-ink skin for DeepSeek Harness.",
   "type": "module",
   "license": "MIT",
@@ -33,9 +33,7 @@
     "README.zh.md",
     "LICENSE",
     "DEPLOY.md",
-    "THIRD_PARTY_NOTICES.md",
-    "scripts/install-workspace.ps1",
-    "scripts/rollback-workspace.ps1"
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "build": "tsdown",
@@ -43,6 +41,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint": "node scripts/check-source.mjs",
+    "test:rc4-fixture": "node tests/rc4-artifact.browser.mjs",
     "test:browser": "node scripts/browser-check.mjs",
     "test:composition": "node scripts/browser-check.mjs"
   },
@@ -77,21 +76,23 @@
     }
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "4.0.5",
-    "@deepseek-ai/dsh-settings": "0.2.2-rc.1",
+    "@deepseek-ai/cordis": "4.1.0",
+    "@deepseek-ai/dsh-settings": "0.2.2-rc.4",
     "@deepseek-ai/schemastery": "3.19.0"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "4.0.5",
-    "@deepseek-ai/dsh-client-ui-primitives": "0.2.2-rc.1",
-    "@deepseek-ai/dsh-client-ui-renderer": "0.2.2-rc.1",
-    "@deepseek-ai/dsh-client-ui-sidebar": "0.2.2-rc.1",
-    "@deepseek-ai/dsh-client-ui-slots": "0.2.2-rc.1",
+    "@deepseek-ai/cordis": "4.1.0",
+    "@deepseek-ai/dsh-client-store": "0.2.2-rc.4",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.2.2-rc.4",
+    "@deepseek-ai/dsh-client-ui-renderer": "0.2.2-rc.4",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.2.2-rc.4",
+    "@deepseek-ai/dsh-client-ui-slots": "0.2.2-rc.4",
     "@testing-library/dom": "10.4.1",
     "@testing-library/react": "16.3.3",
     "@types/node": "22.20.1",
     "@types/react": "18.3.31",
     "@types/react-dom": "18.3.7",
+    "immer": "^10.1.1",
     "jsdom": "29.1.1",
     "lightningcss": "1.33.0",
     "playwright": "1.56.1",
@@ -101,8 +102,9 @@
     "tsdown": "0.22.2",
     "typescript": "6.0.3",
     "vitest": "4.1.11",
-    "@deepseek-ai/dsh-client-ui-settings": "0.2.2-rc.1",
-    "@deepseek-ai/dsh-settings": "0.2.2-rc.1",
+    "zustand": "~4.5.7",
+    "@deepseek-ai/dsh-client-ui-settings": "0.2.2-rc.4",
+    "@deepseek-ai/dsh-settings": "0.2.2-rc.4",
     "@deepseek-ai/schemastery": "3.19.0"
   },
   "peerDependenciesMeta": {

@@ -1,8 +1,10 @@
 ---
 kind: package-bundle
-description: "Optional AW/STUDIO branding and Aurora glass-and-ink appearance for the customized RC2 Host."
+description: "Optional AW/STUDIO branding and Aurora glass-and-ink appearance for the customized rc4 host."
 ---
 # dsh-skin
+
+English | [中文](README.zh.md)
 
 <a id="plugin-information"></a>
 ## Plugin information
@@ -12,7 +14,7 @@ Apply reversible AW/STUDIO branding, Aurora colors, and glass surfaces.
 | Field | Value |
 |---|---|
 | Package | `dsh-skin` |
-| Checkout version | `0.1.0` |
+| Checkout version | `0.1.2-rc4.3` |
 | Maintained repository | [AaronWu77/dsh-skin](https://github.com/AaronWu77/dsh-skin) |
 | Package license | MIT |
 
@@ -25,33 +27,31 @@ Package identity, license and upstream declarations are maintained in [package.j
 
 The maintained fork and the upstream project are different repositories. Original author, copyright, license and notice statements remain in force. A missing upstream baseline is left unrecorded rather than inferred from the local version.
 
-English | [中文](README.zh.md)
-
 ## Summary
 
-A reversible browser plugin for AW/STUDIO branding, Aurora colors, glass surfaces, readable ink code cards, and a shared StateDot running glyph. It does not change models, tools, authentication, permissions, Session data, or the conversation hero artwork.
+A reversible browser plugin for AW/STUDIO branding, Aurora colors, glass surfaces, readable ink code cards, and a pulsing running indicator. It does not change models, tools, authentication, permissions, Session data, or the conversation hero artwork.
 
 The **AW Studio** Settings section controls the palette, pointer trails, and trail strength when the Host serves the `dsh-skin` settings. The Settings controls accept finite trail strength values from 0.2 to 1. An existing invalid value is preserved; the appearance uses 0.62 and offers an explicit repair. The Host schema remains permissive, so direct Settings API writes can still store invalid numeric values. Controls show the latest accepted Host values. A refused write can be retried; an unconfirmed write disables controls until the page is reloaded to check the result. Its Settings row uses the sparkle glyph.
 
 ## Installation
 
-Build with `pnpm install --frozen-lockfile --ignore-scripts` and `pnpm run build`. Install as a profile bundle, not by editing an upstream bundle. The first Host migration requires the stopped-service procedure in [DEPLOY.md](DEPLOY.md); adding this plugin to the old customized Host duplicates some styles and uses a different brand scale. An already migrated Host with this bundle installed uses that document’s regular-update guidance; do not repeat the first-migration installer or reinstall unrelated plugins.
+Build with `pnpm install --no-frozen-lockfile --ignore-scripts` and `pnpm run build` in this package. Deploy as a profile bundle in an authorized update window; see [DEPLOY.md](DEPLOY.md).
 
-The package targets DSH `0.2.1-rc.2` with its companion Host migration. Unmodified upstream RC2 supplies the brand slots and theme tokens but lacks several component selectors, so identical appearance there is not promised. The selector expectations are covered by [style-contract.spec.ts](tests/style-contract.spec.ts).
+Full Aurora glass requires DSH `0.2.2-rc.4` with the companion host’s skin markers. An unmarked rc4 host uses the native frame geometry, static Aurora colors, and existing slot and component attributes; it does not show every glass treatment.
 
 ## Ownership and unloading
 
-The browser entry owns one `style[data-dsh-skin-style]` node, the `html[data-dsh-skin="aaron"]` marker, two sidebar brand-slot contributions, and one `conversation.chat.flow.running.icon` contribution, all at priority -100. One `settings.section.icon` contribution supplies the page's navigation glyph and follows both the served namespace and the section declaration. The linked settings package augments its own `@deepseek-ai/dsh-client-ui-slots` copy, so [AwStudioSettingsIcon.tsx](src/client/AwStudioSettingsIcon.tsx) repeats that seat as a type-only declaration. The running-icon injection is independent of brand declarations; it waits for its Host declaration and follows disappearance/redeclaration. Disabling removes those resources, restores the Host's priority-100 official whale, and restores the previous marker unless another owner changed it. A duplicate mounted entry fails rather than accumulating CSS. Another contribution in the same single slot at the same priority conflicts; disable it or use a different priority.
+The browser entry owns one `style[data-dsh-skin-style]` node, the `html[data-dsh-skin="aaron"]` marker, and two sidebar brand contributions at priority -100. The Settings navigation contribution follows the served namespace and its slot declaration. Disabling the entry removes its stylesheet and contributions, and restores the previous marker unless another owner changed it. A duplicate entry fails instead of mounting a second stylesheet.
 
-Rules use semantic tokens and attributes, not CSS-module hashes, copied upstream components, DOM class discovery, or per-message observers. The glyph returns the Host-shared `StateDot` with `state="ongoing"` and the owner-provided `className`; that class preserves content-font-scaled width/height, and a slot-scoped rule inherits text color. It adds no clock, state hooks, observers, or manual DOM. Chat still owns running state, elapsed time, localized text, live announcements, and mount lifetime. Shared spinner animation/reduced-motion behavior remains in ui-primitives. Native drag regions, footer layout, overlay safety, scrollbars, floating-pane collapse, and fullscreen geometry remain Host-owned.
+Rules use semantic attributes rather than CSS Module hashes. On rc4 the skin replaces the host’s decorative mask and SVG with a dot inside the same footprint; reduced motion stops the pulse, and forced colors use the host glyph. Chat retains the clock, localized text, accessibility announcements and mount lifetime. Native drag regions and safe clearance stay with the host.
 
-Published npm RC2 ui-chat does not declare this customized Host slot. [companion-host.ts](src/client/companion-host.ts) therefore mirrors only its exact type-only `SlotMap` member: `{ kind: 'single'; scope: 'session'; owner: { readonly className: string | undefined } }`. It creates no runtime declaration, imports no broad Chat implementation, and uses no unsafe registration casts. Keep this mirror identical to the companion Host; [companion-host-types.ts](tests/companion-host-types.ts) checks that both declarations merge and preserve the exact owner shape. ui-primitives is a pinned build dependency and a Host-provided browser external, never bundled as a private spinner copy.
+The legacy `conversation.chat.flow.running.icon` contribution waits for that slot to be declared. The companion rc4 host uses a marked whale tail instead and does not declare the slot, so the StateDot contribution stays inactive there.
 
 ## Window corners
 
 The inset window rounds only its exposed edges. A hidden sidebar transfers its left corners to the center; an open right panel clips its own right corners without clipping fixed floating panes. A visible bottom-slot occupant owns the lower corners; empty outlets and occupants using `hidden` retain the column corners. Fullscreen panels keep viewport geometry. The outer canvas stays square without a window shadow; only the inset window uses circular corners. The sidebar glass and its column share the same radius so the filter cannot tint the canvas outside the curve.
 
-Run `node tests/window-corners.browser.mjs` against the companion Host checkout to check both palettes, drawer and desktop layouts, right-panel clipping, bottom-slot visibility, fixed floating panes, fullscreen, and skin removal. This browser fixture uses the Host stylesheets without starting a server; it does not replace native desktop acceptance.
+Run `node tests/rc4-artifact.browser.mjs` after building to verify the shipped CSS against rc4 DOM hierarchies and AppFrame styles. A preinstalled Chromium can be selected through `DSH_CHROMIUM_EXECUTABLE`. The fixture does not connect to a server or modify a profile.
 
 ## Development and hot reload
 
@@ -64,10 +64,10 @@ No prompts, tools, events, token accounting, or model-visible data are added. Mo
 ## Verification
 
 - `pnpm run typecheck`: strict production and test typing.
-- `pnpm test`: real published SlotRegistry lifecycle, late declarations, disappearance/redeclaration, brand independence, default priority/fallback, repeated cleanup, CSS scoping, cascade, and rendering safety. The Host-external StateDot is mocked only to check delegation; real primitive/browser integration belongs to the companion Host acceptance.
+- The non-deployment Vitest suites exercise slot lifecycle, settings, scope, cascade, and CSS safety; `DSH_SKIN_TEST_CLIENT` selects the artifact for the settings integration test.
 - `pnpm run build && pnpm run lint`: portable browser factory and publication checks.
-- `pnpm run test:browser`: fresh, keyless shipped Web profile on an OS-assigned port, official CLI installation, enable/disable cleanup and source-watch browser replacement. Set `DSH_HOST_PATH` to a built companion Host; `DSH_BROWSER_CHANNEL` defaults to `chrome`. It never uses the active home or port 3080. Diagnostics remain in ignored `.local/`.
+- The built-CSS fixture checks light and dark paint, handle alignment, and marked and unmarked layouts. Neither it nor the package unit tests verifies the target profile or native chrome.
 
 ## Known Limitations and Deferred Work
 
-AppFrame structural wrappers, native titlebar integration, functional overlay fixes, ToolRow expanded state, and the running-icon slot/default whale remain companion Host changes. Unmodified upstream RC2 has no running-icon declaration, so this contribution stays dormant there. Disabling restores a neutral layout on that customized Host, not a byte-identical upstream app. Native macOS/Windows titlebars and every third-party plugin combination require separate acceptance. Future Host releases can rename tokens or selectors; rerun composition/browser checks before claiming compatibility.
+Expanded tool cards, generic modals, and the rc4 running glyph require the companion markup. Native macOS and Windows titlebars, right-pane transitions, and third-party plugin combinations require deployment acceptance. The legacy workspace migration scripts do not apply to this release.

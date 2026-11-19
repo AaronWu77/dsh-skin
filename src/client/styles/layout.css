@@ -1,6 +1,5 @@
 /* Aurora frame: the skin owns the canvas, the window panel and the ambient layer. */
 html[data-dsh-skin="aaron"] [data-dsh-surface="frame"] {
-  position: relative;
   /* Own stacking context so the aurora can sit at a negative z-index: above the
      canvas background, below every column. */
   isolation: isolate;
@@ -21,7 +20,13 @@ html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] {
   background-image:
     var(--dsw-aurora-1), var(--dsw-aurora-2), var(--dsw-aurora-3),
     var(--dsw-aurora-4), var(--dsw-aurora-5);
-  animation: dsh-skin-aurora-drift var(--dsw-aurora-drift) var(--ds-ease-in-out) infinite;
+  animation: dsh-skin-aurora-drift var(--dsw-aurora-drift) var(--ds-ease-in-out, ease-in-out) infinite;
+}
+
+/* The right handle starts from the inset grid but its inline left uses the
+   full frame width. Subtract both sides of the inset. */
+html[data-dsh-skin="aaron"] [data-dsh-surface="frame"] > [data-side="rightbar"] {
+  translate: calc(-2 * var(--dsw-glass-frame-gap));
 }
 
 /* Round only the window perimeter; internal column and row seams stay square. */
@@ -39,8 +44,8 @@ html[data-dsh-skin="aaron"][data-platform="darwin"] [data-dsh-surface="frame"][d
 html[data-dsh-skin="aaron"][data-windows-titlebar] [data-dsh-surface="frame"][data-sidebar-collapsed] {
   --dsh-skin-center-left-radius: var(--dsw-glass-frame-radius);
 }
-html[data-dsh-skin="aaron"] [data-dsh-part="sidebar-column"] {
-  --dsh-skin-sidebar-radius: var(--dsw-glass-frame-radius) 0 0 var(--dsh-skin-row-bottom-radius);
+html[data-dsh-skin="aaron"] :is([data-dsh-part="sidebar-column"], :where(:has(> [data-slot="sidebar"]))) {
+  --dsh-skin-sidebar-radius: var(--dsw-glass-frame-radius) 0 0 var(--dsh-skin-row-bottom-radius, var(--dsw-glass-frame-radius));
   border-radius: var(--dsh-skin-sidebar-radius);
   corner-shape: round;
 }
@@ -68,7 +73,7 @@ html[data-dsh-skin="aaron"] [data-shell-bottom] {
 /* The mobile drawer is a separate panel, not the window's left column. */
 html[data-dsh-skin="aaron"] [data-dsh-surface="frame"][data-sidebar-drawer] > [data-dsh-part="sidebar-column"] {
   --dsh-skin-sidebar-radius: var(--dsw-glass-frame-radius);
-  inset: var(--dsw-glass-frame-gap) auto var(--dsw-glass-frame-gap) var(--dsw-glass-frame-gap);
+  inset: calc(var(--dsh-frame-chrome-top, 0px) + var(--dsw-glass-frame-gap)) auto var(--dsw-glass-frame-gap) var(--dsw-glass-frame-gap);
 }
 
 /* The centre column is the frosted window: the aurora reads through it blurred. */
@@ -78,18 +83,38 @@ html[data-dsh-skin="aaron"] [data-dsh-surface="center"] {
   backdrop-filter: var(--dsw-glass-blur-strong);
 }
 
-/* The current shell renders one grid frame: the sidebar column is its own
-   glass surface, without a separate sidebar-glass layer. */
-html[data-dsh-skin="aaron"] [data-dsh-surface="sidebar"] {
-  /* Match the paint/filter edge as well as the clipping column; slot anchors
-     between them do not inherit border-radius. */
+/* The column owns the material. A second fill on SidebarRoot would hide it. */
+html[data-dsh-skin="aaron"] :is([data-dsh-surface="sidebar"], :where(:has(> [data-sidebar-footer]))) {
   border-radius: var(--dsh-skin-sidebar-radius);
   corner-shape: round;
-  position: relative;
-  background: var(--dsw-glass-fill);
+  background: transparent;
+}
+
+html[data-dsh-skin="aaron"] [data-sidebar-footer] {
+  border-top: 0.5px solid var(--dsw-glass-stroke);
+}
+
+/* macOS uses the host's wash/tint tokens. The Windows fixed sidebar toggle
+   must remain viewport-positioned instead of inside a filtered column. */
+html[data-dsh-skin="aaron"]:not([data-platform="darwin"], [data-windows-titlebar])
+  :is([data-dsh-part="sidebar-column"], :where(:has(> [data-slot="sidebar"]))) {
+  background: var(--dsw-specific-sidebar-fill);
   -webkit-backdrop-filter: var(--dsw-glass-blur);
   backdrop-filter: var(--dsw-glass-blur);
-  border-right: 0.5px solid var(--dsw-glass-stroke);
+  border-right-color: var(--dsw-glass-stroke);
+}
+
+/* Before the host publishes the markers, use the same paint as the full skin
+   without insetting the frame or relying on a stylesheet-generated name. */
+html[data-dsh-skin="aaron"] [data-slot="root"] > :not([data-dsh-surface="frame"]):has(> [data-rightbar-col]) {
+  background: var(--dsw-aurora-canvas);
+}
+
+html[data-dsh-skin="aaron"] [data-slot="root"] > :not([data-dsh-surface="frame"]) :where(:has(> [data-slot="main"])) {
+  background: var(--dsw-glass-window);
+  -webkit-backdrop-filter: var(--dsw-glass-blur-strong);
+  backdrop-filter: var(--dsw-glass-blur-strong);
+  border-radius: 0 var(--dsw-glass-frame-radius) var(--dsw-glass-frame-radius) 0;
 }
 
 @keyframes dsh-skin-aurora-drift {
@@ -105,4 +130,23 @@ html[data-dsh-skin="aaron"] [data-sidebar-right-panel]::before { background: var
 
 @media (prefers-reduced-motion: reduce) {
   html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] { animation: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  html[data-dsh-skin="aaron"] [data-dsh-part="ambient"] { display: none; }
+  html[data-dsh-skin="aaron"] [data-slot="root"] > :not([data-dsh-surface="frame"]):has(> [data-rightbar-col]) {
+    background: var(--dsw-alias-bg-base);
+  }
+  html[data-dsh-skin="aaron"] [data-dsh-surface="center"],
+  html[data-dsh-skin="aaron"] [data-slot="root"] > :not([data-dsh-surface="frame"]) :where(:has(> [data-slot="main"])) {
+    background: var(--dsw-alias-bg-base);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  html[data-dsh-skin="aaron"]:not([data-platform="darwin"])
+    :is([data-dsh-part="sidebar-column"], :where(:has(> [data-slot="sidebar"]))) {
+    --dsw-specific-sidebar-fill: var(--dsw-alias-bg-base);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }

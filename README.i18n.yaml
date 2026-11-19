@@ -1,31 +1,31 @@
 # Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
 # section, a hash of its English and Chinese blocks outside code blocks and generated regions.
-# Update both languages together; record section hashes with the companion Host
-# translation-pairing-record.ts helpers against this independent repository root.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write local-plugins/plugins/dsh-skin/README.md
 /:
-  en: 13e25603731d4aa6
-  zh: 1145ce1086e950d7
+  en: 1643c8c432d4ce61
+  zh: 4b29e63863f3c267
 /dsh-skin:
-  en: 8ff9848652f044c1
-  zh: 8ff9848652f044c1
+  en: f3ed8de50b50f217
+  zh: 9c234443f28fabfe
 /dsh-skin/plugin-information:
-  en: 16a06271cefa9f8e
-  zh: c87079a98ec55b76
+  en: e9949d8a84137b08
+  zh: fafdec2d1e5e5468
 /dsh-skin/source-and-attribution:
-  en: 828d6ef5d103c858
-  zh: 61a18077fae37408
+  en: aab5157a55261ad8
+  zh: 6bae0b338d52ac15
 /dsh-skin/summary:
-  en: 7d1d305c2b6f7af9
-  zh: 4de903a4bca777ea
+  en: 54471bc972e0dae7
+  zh: 020e024d2b1bd439
 /dsh-skin/installation:
-  en: 255fc75b3aa5bc20
-  zh: 96846ff10d1a45d7
+  en: e187965785882a1c
+  zh: 889fecbb1440d99c
 /dsh-skin/ownership-and-unloading:
-  en: 425762745bd948db
-  zh: 680693405fb1dc33
+  en: bdc550935e3187f8
+  zh: 6c68d5af16e369f7
 /dsh-skin/window-corners:
-  en: 649f53eb4cb961a1
-  zh: 293d200d9c419708
+  en: aea2b52df6d158bf
+  zh: 19e47eacc7377a6f
 /dsh-skin/development-and-hot-reload:
   en: f223de7bf3deb334
   zh: b40f675214a275f1
@@ -33,8 +33,8 @@
   en: 24b4fb556a970590
   zh: 4b54bda7589dcd8d
 /dsh-skin/verification:
-  en: c2853ed3be6e3437
-  zh: 9e5dbf428a306f5c
+  en: d77adc0413a84891
+  zh: 26496c8641c21535
 /dsh-skin/known-limitations-and-deferred-work:
-  en: 870bb32ef35aa2f6
-  zh: 0194ab9421e40342
+  en: 26c42c03ba3f5304
+  zh: b1f937e51f34c329

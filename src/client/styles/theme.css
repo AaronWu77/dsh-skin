@@ -29,16 +29,14 @@ html[data-dsh-skin="aaron"] body {
   --dsw-aurora-4: radial-gradient(56vw 56vw at 88% 92%, rgba(201, 180, 255, 0.60) 0%, rgba(201, 180, 255, 0.25) 38%, rgba(201, 180, 255, 0.07) 56%, rgba(201, 180, 255, 0) 74%);
   --dsw-aurora-5: radial-gradient(62vw 62vw at 46% 46%, rgba(186, 205, 255, 0.46) 0%, rgba(186, 205, 255, 0.19) 38%, rgba(186, 205, 255, 0.06) 56%, rgba(186, 205, 255, 0) 74%);
   --dsw-aurora-drift: 32s;
+  --dsw-aurora-canvas: var(--dsw-aurora-1), var(--dsw-aurora-2), var(--dsw-aurora-3),
+    var(--dsw-aurora-4), var(--dsw-aurora-5), var(--dsw-glass-canvas);
   --dsw-glass-frame-gap: clamp(10px, 1.4vw, 18px);
   --dsw-glass-frame-radius: clamp(16px, 1.8vw, 26px);
   --dsw-glass-window: linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.14) 46%, rgba(196, 208, 255, 0.20) 100%);
   --dsw-glass-canvas: linear-gradient(158deg, rgb(247, 244, 255) 0%, rgb(253, 246, 251) 42%, rgb(241, 247, 255) 100%);
   /* The shell paints its sidebar column from this token; keep it translucent so the aurora reads through. */
   --dsw-specific-sidebar-fill: rgba(255, 255, 255, 0.42);
-  /* Page roots stay transparent so the frame canvas and aurora read through them. */
-  --dsw-specific-page-fill: transparent;
-  --dsw-specific-sticky-fill: rgb(250, 248, 255);
-  --dsw-specific-sticky-blur: var(--dsw-glass-blur);
 }
 html[data-dsh-skin="aaron"] body[data-ds-dark-theme] {
   --dsw-alias-markdown-code-block-banner: rgba(255, 255, 255, 0.05);
@@ -72,10 +70,29 @@ html[data-dsh-skin="aaron"] body[data-ds-dark-theme] {
   --dsw-glass-window: linear-gradient(135deg, rgba(38, 34, 58, 0.42) 0%, rgba(24, 22, 36, 0.30) 46%, rgba(28, 34, 62, 0.36) 100%);
   --dsw-glass-canvas: linear-gradient(158deg, rgb(20, 18, 30) 0%, rgb(26, 20, 28) 42%, rgb(17, 22, 33) 100%);
   --dsw-specific-sidebar-fill: rgba(30, 31, 36, 0.48);
-  --dsw-specific-page-fill: transparent;
-  --dsw-specific-sticky-fill: rgb(24, 23, 30);
-  --dsw-specific-sticky-blur: var(--dsw-glass-blur);
 }
+/* AppFrame draws these layers on macOS; the other rc4 design tokens remain host-owned. */
+html[data-dsh-skin="aaron"][data-platform="darwin"] body {
+  --dsw-specific-sidebar-wash-top: rgb(179 160 255 / 0.10);
+  --dsw-specific-sidebar-wash-top-clear: rgb(179 160 255 / 0);
+  --dsw-specific-sidebar-wash-bottom: rgb(147 201 255 / 0.09);
+  --dsw-specific-sidebar-wash-bottom-clear: rgb(147 201 255 / 0);
+  --dsw-specific-sidebar-tint: var(--dsw-specific-sidebar-fill);
+}
+
+html[data-dsh-skin="aaron"][data-platform="darwin"] body[data-ds-dark-theme] {
+  --dsw-specific-sidebar-wash-top: rgb(107 69 255 / 0.08);
+  --dsw-specific-sidebar-wash-top-clear: rgb(107 69 255 / 0);
+  --dsw-specific-sidebar-wash-bottom: rgb(47 107 255 / 0.07);
+  --dsw-specific-sidebar-wash-bottom-clear: rgb(47 107 255 / 0);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  html[data-dsh-skin="aaron"] :is(body, body[data-ds-dark-theme]) {
+    --dsw-specific-sidebar-fill: var(--dsw-alias-bg-base);
+  }
+}
+
 /* Personal overrides: gradient-shadow-text.css */
 html[data-dsh-skin="aaron"] body {
   --dsw-mask-blur: blur(2px)

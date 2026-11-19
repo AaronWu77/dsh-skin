@@ -10,7 +10,7 @@ const settingsRequire = createRequire(filename)
 let apply: typeof SettingsApply | undefined
 runInNewContext(readFileSync(filename, 'utf8'), {
   window: { __ModuleLoader__: { load(record: { factory: (require: (name: string) => unknown) => { apply: typeof SettingsApply } }) {
-    apply = record.factory((name: string) => name === '@deepseek-ai/cordis' ? require(name) : settingsRequire(name)).apply
+    apply = record.factory((name: string) => name === '@deepseek-ai/cordis' || name === '@deepseek-ai/dsh-client-store' ? require(name) : settingsRequire(name)).apply
   } } },
   console, setTimeout, clearTimeout, queueMicrotask, structuredClone,
 })

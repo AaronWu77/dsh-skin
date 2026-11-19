@@ -4,6 +4,7 @@ import postcss, { type Root, type Rule } from 'postcss'
 import { JSDOM } from 'jsdom'
 import { describe, expect, it } from 'vitest'
 
+const EXPANDED = '[data-dsh-surface="tool-call"]:is([data-expanded], :where(:has(> [data-open] > [data-disclosure-header])))'
 const GATE = 'html[data-dsh-skin="aaron"]'
 const names = ['theme.css', 'layout.css', 'components.css', 'skin.css'] as const
 const sheets = new Map(names.map(name => [name, postcss.parse(
@@ -27,7 +28,8 @@ function rules(root: Root): Rule[] {
 }
 
 function declarations(sheet: typeof names[number], selector: string): Map<string, string> {
-  const matches = rules(sheets.get(sheet)!).filter(rule => rule.selectors.includes(selector))
+  const matches = rules(sheets.get(sheet)!).filter(rule => rule.selectors.includes(selector)
+    && (rule.parent?.type !== 'atrule' || !rule.parent.params.startsWith('(prefers-reduced-')))
   if (matches.length === 0) throw new Error('Missing selector: ' + selector)
   return new Map(matches.flatMap(rule => rule.nodes.flatMap(node =>
     node.type === 'decl' ? [[node.prop, node.value.trim().replace(/\s+/g, ' ')] as const] : [])))
@@ -94,7 +96,7 @@ describe('skin stylesheet isolation', () => {
     // The Host marks its own running indicator with data-dsh-part="running-glyph"; the skin
     // swaps that glyph for a pulsing dot instead of restyling a shared svg selector.
     const wrapper = GATE + ' [data-dsh-part="running-glyph"]'
-    expect(declarations('components.css', wrapper + ' > svg')).toEqual(new Map([['display', 'none']]))
+    expect(declarations('components.css', wrapper + ' > :is(svg, span)')).toEqual(new Map([['display', 'none']]))
     const dot = declarations('components.css', wrapper + '::before')
     expect(dot.get('content')).toBe('""')
     expect(dot.get('width')).toBe('8px')
@@ -106,7 +108,7 @@ describe('skin stylesheet isolation', () => {
     try {
       const document = dom.window.document
       expect(document.getElementById('glyph')!.matches(wrapper)).toBe(true)
-      expect(document.getElementById('hostSvg')!.matches(wrapper + ' > svg')).toBe(true)
+      expect(document.getElementById('hostSvg')!.matches(wrapper + ' > :is(svg, span)')).toBe(true)
       expect(document.getElementById('other')!.matches(wrapper)).toBe(false)
       document.documentElement.removeAttribute('data-dsh-skin')
       expect(document.getElementById('glyph')!.matches(wrapper)).toBe(false)
@@ -151,7 +153,7 @@ describe('backdrop-filter and scrollbar rendering safety', () => {
 
   it('keeps complete l2 pairs on the skin-added expanded tool surface', () => {
     for (const [name, root] of sheets) expect(scrollbarOffenders(root), name).toEqual([])
-    const expanded = component('[data-dsh-surface="tool-call"][data-expanded]')
+    const expanded = component(EXPANDED)
     for (const [property, value] of SCROLLBAR_PAIR) expect(expanded.get(property)).toBe(value)
     expect(expanded.get('background')).toBe('var(--dsw-glass-fill)')
   })
@@ -167,11 +169,14 @@ describe('backdrop-filter and scrollbar rendering safety', () => {
     }
     for (const [selector, blur] of [
       ['[data-dsh-surface="center"]', 'var(--dsw-glass-blur-strong)'],
-      ['[data-dsh-surface="sidebar"]', 'var(--dsw-glass-blur)'],
     ] as const) {
       const values = declarations('layout.css', GATE + ' ' + selector)
       expect(values.get('backdrop-filter'), selector).toBe(blur)
     }
+    const sidebarColumn = rules(sheets.get('layout.css')!).find(rule =>
+      rule.selector.includes('[data-dsh-part="sidebar-column"]') && rule.nodes.some(node =>
+        node.type === 'decl' && node.prop === 'backdrop-filter' && node.value === 'var(--dsw-glass-blur)'))
+    expect(sidebarColumn?.selector).toContain(':not([data-platform="darwin"], [data-windows-titlebar])')
   })
 })
 
@@ -179,7 +184,7 @@ describe('skin appearance ownership', () => {
   it('keeps the glass and ink token families complete in both palettes', () => {
     const light = declarations('theme.css', GATE + ' body')
     const dark = declarations('theme.css', GATE + ' body[data-ds-dark-theme]')
-    const family = (values: Map<string, string>) => [...values.keys()].filter(name => /^--dsw-(?:glass-|aurora-|code-)/.test(name)).sort()
+    const family = (values: Map<string, string>) => [...values.keys()].filter(name => /^--dsw-(?:glass-|aurora-|code-)/.test(name) && name !== '--dsw-aurora-canvas').sort()
     expect(family(light).length).toBeGreaterThan(0)
     expect(family(dark)).toEqual(family(light))
     expect(light.get('--dsw-alias-markdown-code-block')).toBe('rgba(24, 24, 33, 0.78)')
@@ -220,8 +225,8 @@ describe('skin appearance ownership', () => {
 
   it('owns the custom radii and retains the workspace-picker stroke exception', () => {
     for (const [selector, radius] of [
-      ['[data-dsh-surface="user-bubble"]', '22px'], ['[data-composer-card]', '22px'],
-      ['[data-dsh-part="composer-command"]', '9px'], ['[data-dsh-surface="modal"]', '24px'],
+      [':is([data-dsh-surface="user-bubble"], [data-message-bubble])', '22px'], ['[data-composer-card]', '22px'],
+      ['[data-composer-card] [data-composer-command] > span', '9px'], ['[data-dsh-surface="modal"]', '24px'],
     ]) expect(component(selector!).get('border-radius'), selector).toBe(radius)
     expect(component('[data-composer-card]').has('--dsw-elevation-stroke-color')).toBe(false)
     expect(component('[data-composer-card]:not([data-dsh-part="composer-workspace-trigger"])').get('--dsw-elevation-stroke-color'))
@@ -236,9 +241,10 @@ describe('skin appearance ownership', () => {
     for (const selector of ['[data-read]', '[data-diff]', '[data-search]', '[data-terminal]', '[data-web]', '.md-code-block', '[data-dsh-surface="json"]', '[data-dsh-surface="tool-io"]']) {
       expect(ink!.selector).toContain(selector)
     }
-    expect(component('.md-code-block > [data-dsh-part="code-banner-wrap"]').get('backdrop-filter')).toBe('var(--dsw-glass-blur-thin)')
+    expect(component(`.md-code-block > :is(
+  [data-dsh-part="code-banner-wrap"], :where(:has(> [data-code-block-banner]))
+)`).get('backdrop-filter')).toBe('var(--dsw-glass-blur-thin)')
     expect(component('[data-web]').get('--dsw-alias-link')).toBe('var(--dsw-code-link)')
-    expect(rules(sheets.get('components.css')!).some(rule => rule.selector.includes('[data-code-block-banner]'))).toBe(false)
   })
 
   it('removes only top-level expanded tool-card margins, not nested Markdown cards', () => {
